@@ -11,8 +11,14 @@ import '../utils/common_utils.dart' as utils;
 class LeitaiPage extends StatefulWidget {
   // 首页条目索引
   int index = 2;
+  /// 团战
+  static int GROUP_INDEX = 1;
+  /// 擂台
+  static int  LEITAI_INDEX = 2;
+  String name = "";
 
-  LeitaiPage(this.index);
+
+  LeitaiPage(this.index,{this.name});
 
   @override
   State<StatefulWidget> createState() {

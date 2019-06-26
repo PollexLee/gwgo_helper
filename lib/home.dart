@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'page/leitai_page.dart';
 import 'promise.dart' as promise;
@@ -12,7 +13,7 @@ class HomePage extends StatelessWidget {
     '选择扫描妖灵',
     '五星御灵团战',
     '彩笔擂台',
-    // '扫描单人擂台',
+    '扫描单人擂台',
     '关于',
   ];
   List<String> subtitleList = [
@@ -20,7 +21,7 @@ class HomePage extends StatelessWidget {
     '选择需要扫描的妖灵',
     '只打句芒！',
     '战力从低到高的擂台',
-    // '扫描某人的擂台',
+    '扫描某人的擂台',
     '关于飞行指示器',
   ];
 
@@ -90,15 +91,37 @@ class HomePage extends StatelessWidget {
         promise.isPromise();
         Navigator.pushNamed(context, '/selectYaoling');
         break;
-      case 2:
-      case 3:
+      case 2: //扫描五星团战
+      promise.isPromise();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) {
+          return LeitaiPage(LeitaiPage.GROUP_INDEX);
+        }));
+      break;
+      case 3: // 扫描擂台排名
         promise.isPromise();
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) {
-          return LeitaiPage(index);
+          return LeitaiPage(LeitaiPage.LEITAI_INDEX);
         }));
         break;
-      case 4:
+      case 4: // 扫描单人擂台
+        promise.isPromise();
+        showCupertinoDialog(
+          context: context,
+          builder: (context){
+            return SimpleDialog(
+              title: Text('输入要搜索人的呢称'),
+            );
+          }
+
+        );
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) {
+          return LeitaiPage(LeitaiPage.LEITAI_INDEX,name: '',);
+        }));
+        break;
+      case 5:
         Navigator.pushNamed(context, '/juanzhu');
         break;
     }
