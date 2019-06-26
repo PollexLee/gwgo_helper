@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
     '选择需要扫描的妖灵',
     '只打句芒！',
     '战力从低到高的擂台',
-    '扫描某人的擂台',
+    '扫描单人擂台',
     '关于飞行指示器',
   ];
 
@@ -79,6 +79,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  TextEditingController nameController = new TextEditingController();
+
   double lat = 40.066;
   double lon = 116.2283;
   _onTap(int index) {
@@ -92,12 +94,12 @@ class HomePage extends StatelessWidget {
         Navigator.pushNamed(context, '/selectYaoling');
         break;
       case 2: //扫描五星团战
-      promise.isPromise();
+        promise.isPromise();
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) {
           return LeitaiPage(LeitaiPage.GROUP_INDEX);
         }));
-      break;
+        break;
       case 3: // 扫描擂台排名
         promise.isPromise();
         Navigator.push(context,
@@ -108,23 +110,61 @@ class HomePage extends StatelessWidget {
       case 4: // 扫描单人擂台
         promise.isPromise();
         showCupertinoDialog(
-          context: context,
-          builder: (context){
-            return SimpleDialog(
-              title: Text('输入要搜索人的呢称'),
-            );
-          }
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('输入要搜索人的呢称'),
+                content: Container(
+                  child: TextField(
+                    controller: nameController,
+                  ),
+                ),
+                actions: <Widget>[
+                  RaisedButton(
+                    child: Text(
+                      '取消',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      print('点击了取消');
+                    },
+                    color: Colors.grey,
+                  ),
+                  RaisedButton(
+                    child: Text(
+                      '确认',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      print('点击了确认');
+                      _openSingleLeitaiPage(nameController.text);
+                    },
+                  )
+                ],
+              );
+            });
 
-        );
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) {
-          return LeitaiPage(LeitaiPage.LEITAI_INDEX,name: '',);
-        }));
         break;
       case 5:
         Navigator.pushNamed(context, '/juanzhu');
         break;
     }
+  }
+
+  _openSingleLeitaiPage(String name) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return LeitaiPage(
+            LeitaiPage.LEITAI_INDEX,
+            name: name,
+          );
+        },
+      ),
+    );
   }
 }
 

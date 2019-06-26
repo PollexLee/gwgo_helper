@@ -18,6 +18,8 @@ class WebSocketCore {
 
   Function initSuccess;
 
+  bool isNotify = false;
+
   init(int count, Function initSuccess) async {
     this.initSuccess = initSuccess;
     socketStack.clear();
@@ -84,7 +86,8 @@ class WebSocketCore {
         if (item.status != GwgoSocketWrap.ready) {
           allReady = false;
         }
-        if (allReady) {
+        if (allReady && !isNotify) {
+          isNotify = true;
           initSuccess(0);
         }
       }
@@ -278,8 +281,10 @@ class GwgoSocketWrap {
       }
       int id = resultMap['requestid'];
       if (id != _request.id) {
+        print('id匹配失败，id = $id, requestId = ${_request.id}');
         return;
       }
+      print('id匹配成功，id = $id');
 
       _request.callback.onReceiveData(resultMap);
       _request = null;

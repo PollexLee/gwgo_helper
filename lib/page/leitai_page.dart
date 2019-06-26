@@ -10,49 +10,52 @@ import '../utils/common_utils.dart' as utils;
 
 class LeitaiPage extends StatefulWidget {
   // 首页条目索引
-  int index = 2;
+  int index = GROUP_INDEX;
+
   /// 团战
   static int GROUP_INDEX = 1;
+
   /// 擂台
-  static int  LEITAI_INDEX = 2;
-  String name = "";
+  static int LEITAI_INDEX = 2;
+  String name = '';
 
+  String title = '擂台扫描';
 
-  LeitaiPage(this.index,{this.name});
+  LeitaiPage(this.index, {this.name});
 
   @override
   State<StatefulWidget> createState() {
+        // 修改标题
+    if (name != null && name != '') {
+      title =  title + ' - $name';
+    }
     return LeitaiState();
   }
 }
 
 class LeitaiState extends State<LeitaiPage> {
   final GlobalKey<ScaffoldState> key = GlobalKey();
-  // var buttonText = '扫描稀有';
   List<Leitai> leitaiList = List();
   LeitaiManager manager;
 
   int _getLeitaiType(int index) {
-    if (index == 2) {
+    if (index == LeitaiPage.GROUP_INDEX) {
       return LEITAI_TYPE_GROUP;
-    } else if (index == 3) {
+    } else if (index == LeitaiPage.LEITAI_INDEX) {
       return LEITAI_TYPE_NORMAL;
     }
   }
 
   @override
   void initState() {
-    // 在initState 执行完成之前，无法调用此方法
-    // index = ModalRoute.of(context).settings.arguments;
+
     manager = LeitaiManager();
     manager.init((int status) {
+      print('初始化完成');
       if (status == 0) {
         _refreshLeitai();
       } else if (status == 1) {
         manager.close();
-        // setState(() {
-        //   buttonText = '扫描结束';
-        // });
       }
     });
     super.initState();
@@ -61,16 +64,16 @@ class LeitaiState extends State<LeitaiPage> {
   void _refreshLeitai() {
     manager.refreshLeitai((List<Leitai> data) {
       if (data.isNotEmpty) {
-        // if (leitaiList.length > 100) {
-        //   key.currentState.showSnackBar(SnackBar(
-        //     content: Text('擂台数量已大于100，不再添加'),
-        //   ));
-        //   return;
-        // }
         data.forEach((leitai) {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL &&
               leitai.isNormal()) {
-            leitaiList.add(leitai);
+            if (widget.name == null || widget.name == '') {
+              leitaiList.add(leitai);
+            } else {
+              if (leitai.winner_name.contains(widget.name)) {
+                leitaiList.add(leitai);
+              }
+            }
           } else if (_getLeitaiType(widget.index) == LEITAI_TYPE_GROUP &&
               leitai.isGroup()) {
             leitaiList.add(leitai);
@@ -79,46 +82,11 @@ class LeitaiState extends State<LeitaiPage> {
 
         if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
           leitaiList.sort((left, right) =>
-              right.winner_fightpower.compareTo(left.winner_fightpower));
+              left.getYaolingPower().compareTo(right.getYaolingPower()));
         }
         setState(() {});
       }
     });
-    // if (connectStatus != 2) {
-    //   key.currentState.showSnackBar(SnackBar(
-    //     content: Text('请等连接成功后再扫描'),
-    //   ));
-    //   return;
-    // }
-    // setState(() {
-    //   leitaiList.clear();
-    //   buttonText = '扫描中';
-    // });
-    // key.currentState.showSnackBar(SnackBar(
-    //   content: Text('开始扫描'),
-    // ));
-    // _radarSocket.refresh((List<Leitai> data) {
-    //   if (data == null) {
-    //     key.currentState.showSnackBar(SnackBar(
-    //       content: Text('扫描结束'),
-    //     ));
-    //     setState(() {
-    //       buttonText = '扫描结束，点击重新开始扫描';
-    //     });
-    //   } else if (data.isNotEmpty) {
-    //     key.currentState.showSnackBar(SnackBar(
-    //       content: Text('此处有${data.length}个五级擂台'),
-    //     ));
-    //     setState(() {
-    //       leitaiList.addAll(data);
-    //       // 按照战力排序
-    //       if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
-    //         leitaiList.sort((left, right) =>
-    //             left.getYaolingPower().compareTo(right.getYaolingPower()));
-    //       }
-    //     });
-    //   }
-    // });
   }
 
   @override
@@ -126,15 +94,9 @@ class LeitaiState extends State<LeitaiPage> {
     return Scaffold(
       key: key,
       appBar: AppBar(
-        title: Text('三环内五星擂台'),
+        title: Text(widget.title),
       ),
       body: _buildBody(leitaiList),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _connect,
-      //   tooltip: 'Connect',
-      //   child: _buildFloatActionButton(connectStatus),
-      //   backgroundColor: _buildFloatActionButtonColor(connectStatus),
-      // ),
     );
   }
 

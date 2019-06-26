@@ -17,7 +17,7 @@ final List<String> xiyouList = [
 ];
 
 /// 我的周围 距离
-final int distance = 50000;
+final int distance = 40000;
 
 final String openMultiFlyKey = 'OpenMultiFlyKey';
 bool isOpenMultiFly = true;

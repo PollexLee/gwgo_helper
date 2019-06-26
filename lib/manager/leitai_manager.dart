@@ -31,6 +31,7 @@ class LeitaiManager implements Callback {
 
   /// 刷新擂台
   refreshLeitai(Function callback) async {
+    id = 1;
     this.callback = callback;
 
     // 左下经纬度是0，说明是我的周围，根据当前位置来计算扫描经纬度
