@@ -38,10 +38,11 @@ class LeitaiManager implements Callback {
     if (leftBottomLocation.latitude == 0) {
       Location location = await getDeviceLocation();
       leftBottomLocation = MockLocation.fromLocation(location);
-      rightTopLocation.latitude = leftBottomLocation.latitude + distance;
-      rightTopLocation.longitude = leftBottomLocation.longitude + distance;
-      leftBottomLocation.latitude -= distance;
-      leftBottomLocation.longitude -= distance;
+      rightTopLocation.latitude = leftBottomLocation.latitude + leitai_distance;
+      rightTopLocation.longitude =
+          leftBottomLocation.longitude + leitai_distance;
+      leftBottomLocation.latitude -= leitai_distance;
+      leftBottomLocation.longitude -= leitai_distance;
     }
 
     var currentLat = leftBottomLocation.latitude;
@@ -91,7 +92,7 @@ class LeitaiManager implements Callback {
   onReceiveData(Map<String, dynamic> resultMap) {
     List<dynamic> tempList = resultMap['dojo_list'];
     List<Leitai> leitaiList = List();
-    if(tempList == null || tempList.isEmpty){
+    if (tempList == null || tempList.isEmpty) {
       tempList = List();
     }
     tempList.forEach((sprite) {

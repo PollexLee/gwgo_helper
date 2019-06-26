@@ -13,11 +13,12 @@ final List<String> xiyouList = [
   '桂林城区',
   '重庆',
   '宿州',
-  '青岛黄岛区',
+  '青岛',
 ];
 
 /// 我的周围 距离
 final int distance = 40000;
+final int leitai_distance = 60000;
 
 final String openMultiFlyKey = 'OpenMultiFlyKey';
 bool isOpenMultiFly = true;

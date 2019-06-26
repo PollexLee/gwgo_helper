@@ -19,7 +19,6 @@ Map<String, int> registMap = {
   '865413032527870': commonTime,
   '869705034700777': commonTime,
   '354765088983929': commonTime,
-  '865749038394488': commonTime,
   '861608042620979': commonTime,
   '863175042352415': commonTime,
   '866400033192506': commonTime,
@@ -31,7 +30,6 @@ Map<String, int> registMap = {
   '865441037037264': commonTime,
   '354268095777418': commonTime,
   '869759037886521': commonTime,
-  'A0000087B96B79': commonTime,
 };
 
 Map<String, int> vipMap = {
@@ -57,6 +55,7 @@ Map<String, int> vipMap = {
   '867520045967253': 1561478400000 + MONTH_TIME, // 车马邮箱
   '867614043378892': 1561478400000 + WEEK_TIME, // 在线代捉
   '863505034241657': 1561478400000 + WEEK_TIME, // 迷茫的云
+  'A0000087B96B79': 1561478400000 + MONTH_TIME, // 二号飞行员
 };
 
 /// 是否授权
