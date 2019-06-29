@@ -76,7 +76,7 @@ class LeitaiManager implements Callback {
     map['latitude'] = currentLat;
     int requestid = id++;
     map['requestid'] = requestid;
-    map['platform'] = 0;
+    map['platform'] = '0';
     lastRequestId = requestid;
     socketCore.send(requestid, jsonCodec.encode(map), this);
   }

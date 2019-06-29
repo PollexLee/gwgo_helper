@@ -25,9 +25,9 @@ class LeitaiPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-        // 修改标题
+    // 修改标题
     if (name != null && name != '') {
-      title =  title + ' - $name';
+      title = title + ' - $name';
     }
     return LeitaiState();
   }
@@ -48,7 +48,6 @@ class LeitaiState extends State<LeitaiPage> {
 
   @override
   void initState() {
-
     manager = LeitaiManager();
     manager.init((int status) {
       print('初始化完成');
@@ -80,11 +79,12 @@ class LeitaiState extends State<LeitaiPage> {
           }
         });
 
-        if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
-          leitaiList.sort((left, right) =>
-              left.getYaolingPower().compareTo(right.getYaolingPower()));
-        }
-        setState(() {});
+        setState(() {
+          if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
+            leitaiList.sort((left, right) =>
+                right.winner_fightpower.compareTo(left.winner_fightpower));
+          }
+        });
       }
     });
   }

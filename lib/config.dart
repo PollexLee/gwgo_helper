@@ -18,7 +18,7 @@ final List<String> xiyouList = [
 
 /// 我的周围 距离
 final int distance = 40000;
-final int leitai_distance = 60000;
+final int leitai_distance = 80000;
 
 final String openMultiFlyKey = 'OpenMultiFlyKey';
 bool isOpenMultiFly = true;
@@ -34,7 +34,8 @@ final List<MockLocation> startList = [
   MockLocation(25213017, 110232697), // 桂林城区
   MockLocation(29465905, 106425934), // 重庆
   MockLocation(33537961, 116853333), // 宿州
-  MockLocation(35865683, 120047607), // 青岛黄岛区
+  // MockLocation(35865683, 120047607), // 青岛黄岛区
+  MockLocation(35882931,120037308), // 青岛黄岛区
 ];
 
 final List<MockLocation> endList = [
@@ -48,7 +49,8 @@ final List<MockLocation> endList = [
   MockLocation(25371328, 110331573),
   MockLocation(29709525, 106641541),
   MockLocation(33815666, 117066193),
-  MockLocation(36107369, 120292053),
+  // MockLocation(36107369, 120292053),
+  MockLocation(36465472,120717773),
 ];
 // 选中的稀有妖灵
 String selectedDemon = xiyouList[0];

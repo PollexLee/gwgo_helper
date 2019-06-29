@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
     '五星御灵团战',
     '彩笔擂台',
     '扫描单人擂台',
-    '关于',
+    '服务购买',
   ];
   List<String> subtitleList = [
     '根据选择的妖灵进行扫描',
@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
     '只打句芒！',
     '战力从低到高的擂台',
     '扫描单人擂台',
-    '关于飞行指示器',
+    '购买指示器使用时长',
   ];
 
   @override
@@ -236,7 +236,9 @@ class DrawerState extends State<DrawerLayout> {
 
   Widget _buildLocationItem(int index) {
     var name = xiyouList[index];
-    return RadioListTile(
+    return Container(
+      height: 40,
+      child: RadioListTile(
       value: name,
       groupValue: selectedDemon,
       onChanged: (value) {
@@ -245,6 +247,8 @@ class DrawerState extends State<DrawerLayout> {
         });
       },
       title: Text(name),
+    ),
     );
+    
   }
 }
