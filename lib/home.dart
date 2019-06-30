@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'page/leitai_page.dart';
-import 'promise.dart' as promise;
+import 'promise.dart';
 import 'dart:io';
 import 'config.dart';
 import 'utils/common_utils.dart';
@@ -28,9 +30,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-
-    promise.isPromise();
-
+    PromiseInstance(context);
     return Scaffold(
       drawer: DrawerLayout(),
       appBar: AppBar(title: Text('飞行指示器')),
@@ -49,18 +49,11 @@ class HomePage extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.only(top: 20),
-            child: _buildTime(),
+            child: TimeWidget(),
           ),
         ],
       )),
     );
-  }
-
-  Widget _buildTime(){
-    // if(promise.get){
-
-    // }
-
   }
 
   Widget _buildItem(int index) {
@@ -97,71 +90,74 @@ class HomePage extends StatelessWidget {
 
   TextEditingController nameController = new TextEditingController();
 
-  double lat = 40.066;
-  double lon = 116.2283;
-  _onTap(int index) {
+  _onTap(int index) async {
     switch (index) {
       case 0:
-        promise.isPromise();
-        Navigator.pushNamed(context, '/yaoling');
+        if (await PromiseInstance(context).isPromise(context)) {
+          Navigator.pushNamed(context, '/yaoling');
+        }
+
         break;
       case 1:
-        promise.isPromise();
-        Navigator.pushNamed(context, '/selectYaoling');
+        if (await PromiseInstance(context).isPromise(context)) {
+          Navigator.pushNamed(context, '/selectYaoling');
+        }
         break;
       case 2: //扫描五星团战
-        promise.isPromise();
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) {
-          return LeitaiPage(LeitaiPage.GROUP_INDEX);
-        }));
+        if (await PromiseInstance(context).isPromise(context)) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
+            return LeitaiPage(LeitaiPage.GROUP_INDEX);
+          }));
+        }
         break;
       case 3: // 扫描擂台排名
-        promise.isPromise();
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) {
-          return LeitaiPage(LeitaiPage.LEITAI_INDEX);
-        }));
+        if (await PromiseInstance(context).isPromise(context)) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
+            return LeitaiPage(LeitaiPage.LEITAI_INDEX);
+          }));
+        }
         break;
       case 4: // 扫描单人擂台
-        promise.isPromise();
-        showCupertinoDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('输入要搜索人的呢称'),
-                content: Container(
-                  child: TextField(
-                    controller: nameController,
-                  ),
-                ),
-                actions: <Widget>[
-                  RaisedButton(
-                    child: Text(
-                      '取消',
-                      style: TextStyle(color: Colors.white),
+        if (await PromiseInstance(context).isPromise(context)) {
+          showCupertinoDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('输入要搜索人的呢称'),
+                  content: Container(
+                    child: TextField(
+                      controller: nameController,
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      print('点击了取消');
-                    },
-                    color: Colors.grey,
                   ),
-                  RaisedButton(
-                    child: Text(
-                      '确认',
-                      style: TextStyle(color: Colors.white),
+                  actions: <Widget>[
+                    RaisedButton(
+                      child: Text(
+                        '取消',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        print('点击了取消');
+                      },
+                      color: Colors.grey,
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      print('点击了确认');
-                      _openSingleLeitaiPage(nameController.text);
-                    },
-                  )
-                ],
-              );
-            });
-
+                    RaisedButton(
+                      child: Text(
+                        '确认',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        print('点击了确认');
+                        _openSingleLeitaiPage(nameController.text);
+                      },
+                    )
+                  ],
+                );
+              });
+        }
         break;
       case 5:
         Navigator.pushNamed(context, '/juanzhu');
@@ -265,5 +261,40 @@ class DrawerState extends State<DrawerLayout> {
         title: Text(name),
       ),
     );
+  }
+}
+
+class TimeWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return TimeState();
+  }
+}
+
+class TimeState extends State<TimeWidget> {
+  Timer timer;
+  String time;
+  @override
+  void initState() {
+    if (timer != null) {
+      timer.cancel();
+    }
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (time.contains('到期时间：')) {
+        timer.cancel();
+      }
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildTime();
+  }
+
+  Widget _buildTime() {
+    time = PromiseInstance(context).getLastTime();
+    return Text(time);
   }
 }

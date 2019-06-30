@@ -4,66 +4,32 @@ import 'package:gwgo_helper/manager/yaoling_info.dart';
 import 'package:gwgo_helper/model/leitai.dart';
 import 'package:gwgo_helper/sprite_ids.dart';
 
-class PlatformWidget extends StatefulWidget {
+class PlatformWidget extends StatelessWidget {
   Leitai _leitai;
   Function onTap;
   PlatformWidget(Leitai leitai, {this.onTap}) {
     this._leitai = leitai;
-  }
-
-  @override
-  State<StatefulWidget> createState() {
-    return PlatformState(_leitai);
-  }
-}
-
-class PlatformState extends State<PlatformWidget> {
-  Leitai leitai;
-
-  PlatformState(Leitai leitai) {
-    this.leitai = leitai;
-  }
-
-  String _getYaolingName(int id) {
-    if(id == 2200267){
-      return '香奴儿';
-    }
-    if(YaolingInfoManager.yaolingMap[id] == null){
-      return "未知";
-    } 
-    return YaolingInfoManager.yaolingMap[id].Name;
-  }
-
-  String _getYaolingPic(int id) {
-    if(id == 2200267){
-      return 'https://hy.gwgo.qq.com/sync/pet/small/200267.png';
-    }
-    if (YaolingInfoManager.yaolingMap[id] == null) {
-      print('这个id没有数据：$id');
-      return '';
-    } else {
-      return YaolingInfoManager.yaolingMap[id].SmallImgPath;
-    }
-  }
-
-  @override
-  void initState() {
     SpriteConfig.initAllMap();
-    super.initState();
   }
+
+  // @override
+  // State<StatefulWidget> createState() {
+  //   return PlatformState(_leitai);
+  // }
 
   @override
   Widget build(BuildContext context) {
+    // TODO: implement build
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: Card(
         elevation: 8.0,
         margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
         child: Container(
           alignment: Alignment.topLeft,
           child: ListTile(
-            title:
-                Text('擂主：${leitai.winner_name} 战力:${leitai.winner_fightpower}'),
+            title: Text(
+                '擂主：${_leitai.winner_name} 战力:${_leitai.winner_fightpower}'),
             subtitle: Container(
               alignment: Alignment.topLeft,
               padding: EdgeInsets.all(5.0),
@@ -77,12 +43,15 @@ class PlatformState extends State<PlatformWidget> {
                         CircleAvatar(
                           backgroundColor: Colors.white,
                           child: Image.network(
-                              _getYaolingPic(leitai.sprite_list[0].spriteid)),
+                              _getYaolingPic(_leitai.sprite_list[0].spriteid)),
                         ),
                         RichText(
-                          text: TextSpan(text: '  ${_getYaolingName(leitai.sprite_list[0].spriteid)}  等级:${leitai.sprite_list[0].level}  战力:${leitai.sprite_list[0].fightpower}',
-                          style: TextStyle(color: Colors.black, fontSize: 15)),
-                          ),
+                          text: TextSpan(
+                              text:
+                                  '  ${_getYaolingName(_leitai.sprite_list[0].spriteid)}  等级:${_leitai.sprite_list[0].level}  战力:${_leitai.sprite_list[0].fightpower}',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ),
                       ]),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -90,11 +59,12 @@ class PlatformState extends State<PlatformWidget> {
                         CircleAvatar(
                           backgroundColor: Colors.white,
                           child: Image.network(
-                              _getYaolingPic(leitai.sprite_list[1].spriteid)),
+                              _getYaolingPic(_leitai.sprite_list[1].spriteid)),
                         ),
                         Text(
-                            '  ${_getYaolingName(leitai.sprite_list[1].spriteid)}  等级:${leitai.sprite_list[1].level}  战力:${leitai.sprite_list[1].fightpower}',
-                            style: TextStyle(fontSize: 15, color: Colors.black),),
+                          '  ${_getYaolingName(_leitai.sprite_list[1].spriteid)}  等级:${_leitai.sprite_list[1].level}  战力:${_leitai.sprite_list[1].fightpower}',
+                          style: TextStyle(fontSize: 15, color: Colors.black),
+                        ),
                       ]),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -102,11 +72,12 @@ class PlatformState extends State<PlatformWidget> {
                         CircleAvatar(
                           backgroundColor: Colors.white,
                           child: Image.network(
-                              _getYaolingPic(leitai.sprite_list[2].spriteid)),
+                              _getYaolingPic(_leitai.sprite_list[2].spriteid)),
                         ),
                         Text(
-                            '  ${_getYaolingName(leitai.sprite_list[2].spriteid)}  等级:${leitai.sprite_list[2].level}  战力:${leitai.sprite_list[2].fightpower}',
-                            style: TextStyle(fontSize: 15, color: Colors.black),),
+                          '  ${_getYaolingName(_leitai.sprite_list[2].spriteid)}  等级:${_leitai.sprite_list[2].level}  战力:${_leitai.sprite_list[2].fightpower}',
+                          style: TextStyle(fontSize: 15, color: Colors.black),
+                        ),
                       ]),
                 ],
               ),
@@ -117,8 +88,25 @@ class PlatformState extends State<PlatformWidget> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  String _getYaolingPic(int id) {
+    if (id == 2200267) {
+      return 'https://hy.gwgo.qq.com/sync/pet/small/200267.png';
+    }
+    if (YaolingInfoManager.yaolingMap[id] == null) {
+      print('这个id没有数据：$id');
+      return '';
+    } else {
+      return YaolingInfoManager.yaolingMap[id].SmallImgPath;
+    }
+  }
+
+  String _getYaolingName(int id) {
+    if (id == 2200267) {
+      return '香奴儿';
+    }
+    if (YaolingInfoManager.yaolingMap[id] == null) {
+      return "未知";
+    }
+    return YaolingInfoManager.yaolingMap[id].Name;
   }
 }

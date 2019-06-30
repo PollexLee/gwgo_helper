@@ -67,10 +67,10 @@ class LeitaiState extends State<LeitaiPage> {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL &&
               leitai.isNormal()) {
             if (widget.name == null || widget.name == '') {
-              leitaiList.insert(0, leitai);
+              leitaiList.add(leitai);
             } else {
               if (leitai.winner_name.contains(widget.name)) {
-                leitaiList.insert(0, leitai);
+                leitaiList.add(leitai);
               }
             }
           } else if (_getLeitaiType(widget.index) == LEITAI_TYPE_GROUP &&
@@ -81,11 +81,8 @@ class LeitaiState extends State<LeitaiPage> {
 
         setState(() {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
-            // leitaiList.sort((left, right) =>
-            //     right.winner_fightpower.compareTo(left.winner_fightpower));
-            // var temp = List<Leitai>();
-            // temp.addAll(leitaiList);
-            // leitaiList = temp;
+            leitaiList.sort((left, right) =>
+                left.getYaolingPower().compareTo(left.getYaolingPower()));
           }
         });
       }
@@ -111,10 +108,6 @@ class LeitaiState extends State<LeitaiPage> {
       );
     }
 
-    // return ListView(
-    //   children: _buildCards(leitaiList),
-    // );
-
     return ListView.builder(
       itemCount: leitaiList.length,
       itemBuilder: _buildCard,
@@ -137,48 +130,13 @@ class LeitaiState extends State<LeitaiPage> {
     }
   }
 
-  List<Widget> _buildCards(List<Leitai> leitaiList) {
-    List<Widget> widgetList = List();
-    List<Widget> widgetList1 = leitaiList.map<Widget>((item) {
-      if (item.isNormal()) {
-        // 普通擂台
-        return _buildPlatform(item);
-      } else if (item.isEgg()) {
-        // 蛋
-        return _buildEgg(item);
-      } else if (item.isGroup()) {
-        // 御灵团战
-        return _buildGroup(item);
-      }
-      return null;
-    }).toList();
-
-    // leitaiList.forEach((item) {
-    //   // 构建三种擂台的View
-    //   if (item.isNormal()) {
-    //     // 普通擂台
-    //     widgetList.add(_buildPlatform(item));
-    //   } else if (item.isEgg()) {
-    //     // 蛋
-    //     widgetList.add(_buildEgg(item));
-    //   } else if (item.isGroup()) {
-    //     // 御灵团战
-    //     widgetList.add(_buildGroup(item));
-    //   }
-    // });
-
-    return widgetList1;
-  }
-
   Widget _buildPlatform(Leitai leitai) {
-    // return PlatformWidget(
-    //   leitai,
-    //   onTap: () {
-    //     utils.teleport((leitai.latitude) / 1e6, (leitai.longtitude) / 1e6);
-    //   },
-    // );
-
-    return Text(leitai.winner_name);
+    return PlatformWidget(
+      leitai,
+      onTap: () {
+        utils.teleport((leitai.latitude) / 1e6, (leitai.longtitude) / 1e6);
+      },
+    );
   }
 
   Widget _buildEgg(Leitai leitai) {

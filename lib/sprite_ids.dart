@@ -30,9 +30,11 @@ class SpriteConfig {
     spriteMap[2000188] = 'coco熊';
     spriteMap[2000019] = '金灵';
     spriteMap[2000031] = '银灵';
+    spriteMap[2000410] = '风舞獐';
     spriteMap[2000268] = '白秋练';
     spriteMap[2000404] = '许愿星';
     spriteMap[2000419] = '羊';
+    spriteMap[2000078] = '布鲁';
 
     spriteMap[2000518] = '企鹅';
     spriteMap[2004016] = '素包';
