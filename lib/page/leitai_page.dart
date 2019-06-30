@@ -67,10 +67,10 @@ class LeitaiState extends State<LeitaiPage> {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL &&
               leitai.isNormal()) {
             if (widget.name == null || widget.name == '') {
-              leitaiList.add(leitai);
+              leitaiList.insert(0, leitai);
             } else {
               if (leitai.winner_name.contains(widget.name)) {
-                leitaiList.add(leitai);
+                leitaiList.insert(0, leitai);
               }
             }
           } else if (_getLeitaiType(widget.index) == LEITAI_TYPE_GROUP &&
@@ -81,8 +81,11 @@ class LeitaiState extends State<LeitaiPage> {
 
         setState(() {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
-            leitaiList.sort((left, right) =>
-                right.winner_fightpower.compareTo(left.winner_fightpower));
+            // leitaiList.sort((left, right) =>
+            //     right.winner_fightpower.compareTo(left.winner_fightpower));
+            // var temp = List<Leitai>();
+            // temp.addAll(leitaiList);
+            // leitaiList = temp;
           }
         });
       }
@@ -96,11 +99,11 @@ class LeitaiState extends State<LeitaiPage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: _buildBody(leitaiList),
+      body: _buildBody(),
     );
   }
 
-  Widget _buildBody(List<Leitai> leitaiList) {
+  Widget _buildBody() {
     if (null == leitaiList || leitaiList.isEmpty) {
       return Text(
         '暂时没有擂台数据',
@@ -108,37 +111,74 @@ class LeitaiState extends State<LeitaiPage> {
       );
     }
 
-    return ListView(
-      children: _buildCards(leitaiList),
+    // return ListView(
+    //   children: _buildCards(leitaiList),
+    // );
+
+    return ListView.builder(
+      itemCount: leitaiList.length,
+      itemBuilder: _buildCard,
     );
+  }
+
+  Widget _buildCard(BuildContext context, int index) {
+    var item = leitaiList[index];
+    if (item.isNormal()) {
+      // 普通擂台
+      return _buildPlatform(item);
+    } else if (item.isEgg()) {
+      // 蛋
+      return _buildEgg(item);
+    } else if (item.isGroup()) {
+      // 御灵团战
+      return _buildGroup(item);
+    } else {
+      return Text('异常');
+    }
   }
 
   List<Widget> _buildCards(List<Leitai> leitaiList) {
     List<Widget> widgetList = List();
-    leitaiList.forEach((item) {
-      // 构建三种擂台的View
+    List<Widget> widgetList1 = leitaiList.map<Widget>((item) {
       if (item.isNormal()) {
         // 普通擂台
-        widgetList.add(_buildPlatform(item));
+        return _buildPlatform(item);
       } else if (item.isEgg()) {
         // 蛋
-        widgetList.add(_buildEgg(item));
+        return _buildEgg(item);
       } else if (item.isGroup()) {
         // 御灵团战
-        widgetList.add(_buildGroup(item));
+        return _buildGroup(item);
       }
-    });
+      return null;
+    }).toList();
 
-    return widgetList;
+    // leitaiList.forEach((item) {
+    //   // 构建三种擂台的View
+    //   if (item.isNormal()) {
+    //     // 普通擂台
+    //     widgetList.add(_buildPlatform(item));
+    //   } else if (item.isEgg()) {
+    //     // 蛋
+    //     widgetList.add(_buildEgg(item));
+    //   } else if (item.isGroup()) {
+    //     // 御灵团战
+    //     widgetList.add(_buildGroup(item));
+    //   }
+    // });
+
+    return widgetList1;
   }
 
   Widget _buildPlatform(Leitai leitai) {
-    return PlatformWidget(
-      leitai,
-      onTap: () {
-        utils.teleport((leitai.latitude) / 1e6, (leitai.longtitude) / 1e6);
-      },
-    );
+    // return PlatformWidget(
+    //   leitai,
+    //   onTap: () {
+    //     utils.teleport((leitai.latitude) / 1e6, (leitai.longtitude) / 1e6);
+    //   },
+    // );
+
+    return Text(leitai.winner_name);
   }
 
   Widget _buildEgg(Leitai leitai) {

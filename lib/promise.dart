@@ -12,6 +12,8 @@ final int MONTH_TIME = 2592000000;
 final int WEEK_TIME = 604800000;
 final int THREE_DAY_TIME = 259200000;
 
+int netTime = 0;
+
 Map<String, int> currentMap = Map();
 
 Map<String, int> registMap = {
@@ -76,6 +78,7 @@ Map<String, int> vipMap = {
   '867194048095767': 1561775248000 + WEEK_TIME, // 秋的月
   '865968032271993': 1561775248000 + WEEK_TIME, // yun
   '866400033192506': 1561775248000 + MONTH_TIME, // 列奥纳多.
+  '862495040771056': 1561824417000 + WEEK_TIME, // yun
 };
 
 /// 是否授权
@@ -128,6 +131,7 @@ Future<bool> isTimePromise(int promiseTime) async {
     print(result);
     Map<String, dynamic> data = result['data'];
     int timestemp = int.parse(data['t']);
+    netTime = timestemp;
     print('timestemp = $timestemp');
     return timestemp < promiseTime;
   } catch (exception) {
@@ -139,3 +143,65 @@ Future<bool> isTimePromise(int promiseTime) async {
     return true;
   }
 }
+
+Future<int> getNetTime() async {
+  Dio dio = Dio();
+  dio.options.responseType = ResponseType.json;
+  try {
+    Response response = await dio.get(
+        'https://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp');
+    Map<String, dynamic> result = response.data;
+    print(result);
+    Map<String, dynamic> data = result['data'];
+    int timestemp = int.parse(data['t']);
+    netTime = timestemp;
+    print('timestemp = $timestemp');
+    return timestemp;
+  } catch (exception) {
+    print(exception);
+    await toast('网络异常，请联网后再启动飞行指示器');
+    Timer.periodic(Duration(seconds: 2), (timer) {
+      exit(0);
+    });
+    return 999999999999999;
+  }
+}
+
+/// 获取剩余时间显示文案
+Future<String> getMyTime() async {
+  // 获取IMEI
+  Future<Map<String, dynamic>> imeiMap = getDeviceImei();
+  // 在注册数据中查找有效期
+  imeiMap.then((imeis) async {
+    List<dynamic> imeiList = imeis['imei'];
+    print('imeiList = $imeiList');
+    for (String item in currentMap.keys) {
+      if (imeiList.contains(item)) {
+        // imei已注册，判断时间
+        int myTime = currentMap[item] - netTime;
+        if (myTime > 0) {
+          // xxxx日xx时xx分
+          return '';
+        } else {
+          await toast('已过有效期，请咨询QQ群：162411670');
+          return '已过有效期，请咨询QQ群：162411670';
+        }
+      }
+    }
+    Clipboard.setData(ClipboardData(text: imeiList[0]));
+    await toast('此设备没有绑定，请咨询QQ群：162411670');
+    Timer.periodic(Duration(seconds: 2), (timer) {
+      exit(0);
+    });
+  });
+
+  // 判断有效期是否失效
+}
+
+// int getThisTime(int imei) {
+//   if (currentMap.containsKey(imei)) {
+//     return currentMap[imei];
+//   } else {
+//     return 0;
+//   }
+// }

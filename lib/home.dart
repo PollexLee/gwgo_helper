@@ -34,17 +34,33 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       drawer: DrawerLayout(),
       appBar: AppBar(title: Text('飞行指示器')),
-      body: Container(
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: titleList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return _buildItem(index);
-          },
-        ),
-      ),
+      body: SingleChildScrollView(
+          child: Column(
+        children: <Widget>[
+          Container(
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: titleList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _buildItem(index);
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: _buildTime(),
+          ),
+        ],
+      )),
     );
+  }
+
+  Widget _buildTime(){
+    // if(promise.get){
+
+    // }
+
   }
 
   Widget _buildItem(int index) {
@@ -239,16 +255,15 @@ class DrawerState extends State<DrawerLayout> {
     return Container(
       height: 40,
       child: RadioListTile(
-      value: name,
-      groupValue: selectedDemon,
-      onChanged: (value) {
-        setState(() {
-          selectedDemon = value;
-        });
-      },
-      title: Text(name),
-    ),
+        value: name,
+        groupValue: selectedDemon,
+        onChanged: (value) {
+          setState(() {
+            selectedDemon = value;
+          });
+        },
+        title: Text(name),
+      ),
     );
-    
   }
 }
