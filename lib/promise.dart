@@ -188,6 +188,7 @@ class PromiseInstance {
       '865968032271993': 1561775248000 + WEEK_TIME, // yun
       '866400033192506': 1561775248000 + MONTH_TIME, // 列奥纳多.
       '862495040771056': 1561824417000 + WEEK_TIME, // yun
+      '862537037930102': 1561968468000 + MONTH_TIME, // 醉臥美人膝
     };
 
     currentMap.addAll(vipMap);
