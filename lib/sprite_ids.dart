@@ -20,6 +20,8 @@ class SpriteConfig {
   static final String cacheKey = 'selectedKey';
 
   static init() async {
+    spriteMap[2004037] = '全家兔子';
+    spriteMap[2000064] = '地藏';
     spriteMap[2000106] = '风雪虎';
     spriteMap[2000317] = '金角小妖';
     spriteMap[2000313] = '银角小妖';

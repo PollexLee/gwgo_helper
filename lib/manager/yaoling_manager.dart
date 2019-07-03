@@ -41,12 +41,29 @@ class YaolingManager implements Callback {
     if (leftBottomLocation.latitude == 0) {
       print('获取要扫描的位置');
       callback(null, '正在获取定位');
+      // 获取当前位置
       Location location = await getDeviceLocation();
       leftBottomLocation = MockLocation.fromLocation(location);
-      rightTopLocation.latitude = leftBottomLocation.latitude + distance;
-      rightTopLocation.longitude = leftBottomLocation.longitude + distance;
-      leftBottomLocation.latitude -= distance;
-      leftBottomLocation.longitude -= distance;
+      int allDistance = distance;
+      switch (rangeSelect) {
+        case '极小':
+          allDistance = distance ~/ 4;
+          break;
+        case '小':
+          allDistance = distance;
+          break;
+        case '中':
+          allDistance = distance + stemp;
+          break;
+        case '大':
+          allDistance = distance + 2 * stemp;
+          break;
+      }
+
+      rightTopLocation.latitude = leftBottomLocation.latitude + allDistance;
+      rightTopLocation.longitude = leftBottomLocation.longitude + allDistance;
+      leftBottomLocation.latitude -= allDistance;
+      leftBottomLocation.longitude -= allDistance;
       print('获取到位置');
       callback(null, '扫描中');
     }

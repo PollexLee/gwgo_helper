@@ -27,7 +27,7 @@ class LeitaiPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     // 修改标题
     if (name != null && name != '') {
-      title = title + ' - $name';
+      title = '$name - 开始扫描';
     }
     return LeitaiState();
   }
@@ -61,7 +61,12 @@ class LeitaiState extends State<LeitaiPage> {
   }
 
   void _refreshLeitai() {
-    manager.refreshLeitai((List<Leitai> data) {
+    manager.refreshLeitai((List<Leitai> data, String process) {
+      if (widget.name == null || widget.name == '') {
+        widget.title = '$process';
+      } else {
+        widget.title = '${widget.name} - $process';
+      }
       if (data.isNotEmpty) {
         data.forEach((leitai) {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL &&
@@ -78,14 +83,13 @@ class LeitaiState extends State<LeitaiPage> {
             leitaiList.add(leitai);
           }
         });
-
-        setState(() {
-          if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
-            leitaiList.sort((left, right) =>
-                left.getYaolingPower().compareTo(left.getYaolingPower()));
-          }
-        });
+        // 排序
+        if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
+          leitaiList.sort((left, right) =>
+              left.getYaolingPower().compareTo(left.getYaolingPower()));
+        }
       }
+      setState(() {});
     });
   }
 
@@ -94,7 +98,10 @@ class LeitaiState extends State<LeitaiPage> {
     return Scaffold(
       key: key,
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(fontSize: 14),
+        ),
       ),
       body: _buildBody(),
     );

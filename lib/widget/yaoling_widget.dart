@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gwgo_helper/manager/yaoling_info.dart';
+import 'package:gwgo_helper/model/yaoling.dart' as prefix0;
 
 import '../yaoling.dart';
 
@@ -33,13 +34,14 @@ class YaolingState extends State<YaolingWidget> {
 
   @override
   Widget build(BuildContext context) {
+    prefix0.Yaoling yaolingInfo = YaolingInfoManager.yaolingMap[widget.yaoling.sprite_id];
     return ActionChip(
       elevation: 3.0,
       backgroundColor: _buildYaolingBackgroundColor(widget.yaoling),
       avatar: CircleAvatar(
         backgroundColor: Colors.white,
         child: Image.network(
-          'https://hy.gwgo.qq.com/sync/pet/small/${widget.yaoling.sprite_id - 2000000}.png',
+          '${yaolingInfo.SmallImgPath}',
           fit: BoxFit.contain,
         ),
       ),
@@ -49,7 +51,7 @@ class YaolingState extends State<YaolingWidget> {
           Container(
             width: 50,
             alignment: Alignment.topLeft,
-            child: Text(_getYaolingName(widget.yaoling),
+            child: Text(yaolingInfo.Name,
               style: TextStyle(fontSize: 10),
             ),
           ),
@@ -67,16 +69,7 @@ class YaolingState extends State<YaolingWidget> {
         widget.onTap();
       },
     );
-  }
-
-  String _getYaolingName(Yaoling yaoling){
-    if(YaolingInfoManager.yaolingMap.containsKey(yaoling.sprite_id)){
-      return YaolingInfoManager.yaolingMap[yaoling.sprite_id].Name;
-    } else {
-      return yaoling.name;
-    }
-  }
-              
+  }           
 
   Text _buildTime(int time) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(
@@ -122,7 +115,4 @@ class YaolingState extends State<YaolingWidget> {
     }
     super.dispose();
   }
-}
-
-class _getYaolingName {
 }

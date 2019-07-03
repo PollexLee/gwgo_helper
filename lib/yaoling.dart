@@ -10,6 +10,8 @@ class Yaoling {
   int dismisstime;
   bool isClick = false;
   Color color;
+  String SmallImgPath;
+  String BigImgPath;
 
   Yaoling(
       {this.gentime,
@@ -17,7 +19,9 @@ class Yaoling {
       this.latitude,
       this.longtitude,
       this.sprite_id,
-      this.name}){
+      this.name,
+      this.SmallImgPath,
+      this.BigImgPath}){
       this.dismisstime = (gentime + lifetime) * 1000;
       }
 
@@ -33,6 +37,8 @@ class Yaoling {
       latitude: json['latitude'],
       longtitude: json['longtitude'],
       sprite_id: json['sprite_id'],
+      SmallImgPath: json['SmallImgPath'],
+      BigImgPath: json['BigImgPath'],
     );
   }
 }

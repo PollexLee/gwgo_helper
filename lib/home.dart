@@ -188,26 +188,63 @@ class DrawerLayout extends StatefulWidget {
 }
 
 class DrawerState extends State<DrawerLayout> {
+  TextStyle titleStyle =
+      TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold);
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Container(
-        width: 200,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        primary: true,
+        child: Container(
+          color: Colors.white,
+          height: 800,
+          width: 200,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              _buildFlyWidgets(),
+              _buildMultiFlyWidgets(),
+              _buildYaolingRangeWidget(),
+              Expanded(
+                child: _buildLocationDrawer(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFlyWidgets() {
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.only(left: 22),
+        child: Row(
           children: <Widget>[
-            _buildConfigWidgets(),
-            Expanded(
-              child: _buildLocationDrawer(),
+            Text(
+              "开启飞行",
+              style: TextStyle(color: Colors.black),
             ),
+            Switch(
+              onChanged: (bool value) {
+                setOpenFly(value);
+                setState(() {});
+                print('现在是$isOpenFly');
+              },
+              value: isOpenFly,
+            ),
+            Expanded(child: Container()),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildConfigWidgets() {
+  Widget _buildMultiFlyWidgets() {
     return Container(
       color: Colors.white,
       child: Padding(
@@ -233,21 +270,83 @@ class DrawerState extends State<DrawerLayout> {
     );
   }
 
-  Widget _buildLocationDrawer() {
+  Widget _buildYaolingRangeWidget() {
     return Container(
       color: Colors.white,
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: xiyouList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _buildLocationItem(index);
-        },
+      child: Padding(
+        padding: EdgeInsets.only(left: 22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              '选择妖灵范围',
+              style: titleStyle,
+            ),
+            Container(
+              alignment: Alignment.topLeft,
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: _buildRangeWidgetList(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildLocationItem(int index) {
-    var name = xiyouList[index];
+  List<Widget> _buildRangeWidgetList() {
+    return rangeList.map((item) {
+      return Container(
+        height: 40,
+        child: RadioListTile(
+          value: item,
+          groupValue: rangeSelect,
+          onChanged: (value) {
+            rangeSelect = value;
+            saveYaolingRange();
+            setState(() {});
+          },
+          title: Text(item),
+        ),
+      );
+    }).toList();
+  }
+
+  Widget _buildLocationDrawer() {
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.only(left: 22, top: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              '选择扫描位置',
+              style: titleStyle,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: _buildLocationListWidget(),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildLocationListWidget() {
+    return xiyouList.map((item) {
+      return _buildLocationItem(item);
+    }).toList();
+  }
+
+  Widget _buildLocationItem(String name) {
     return Container(
       height: 40,
       child: RadioListTile(
@@ -257,6 +356,7 @@ class DrawerState extends State<DrawerLayout> {
           setState(() {
             selectedDemon = value;
           });
+          saveLocationRange();
         },
         title: Text(name),
       ),

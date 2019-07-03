@@ -11,12 +11,16 @@ import '../config.dart';
 //获取到插件与原生的交互通道
 const jumpPlugin = const MethodChannel('com.pollex.gwgo/plugin');
 
-Future<ProcessResult> teleport(double lat, double lon) async {
+Future teleport(double lat, double lon) async {
   // 计算目地位置
   List<double> wgsLocation = gcj02towgs84(lon, lat);
   // 复制到粘贴板
   Clipboard.setData(ClipboardData(text: '${wgsLocation[1]},${wgsLocation[0]}'));
-  _flyFromTo(wgsLocation[1], wgsLocation[0]);
+  if (isOpenFly) {
+    _flyFromTo(wgsLocation[1], wgsLocation[0]);
+  } else {
+    toast('已复制经纬度');
+  }
 }
 
 /**
@@ -31,7 +35,6 @@ _flyFromTo(double toLat, double toLon) async {
     double latDiff = toLat - location.latitude;
     double lonDiff = toLon - location.longitude;
 
-    
     // 计算距离
     double distance = sqrt(latDiff * latDiff + lonDiff * lonDiff);
     print('间隔距离是：$distance');

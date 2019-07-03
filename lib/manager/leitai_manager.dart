@@ -20,7 +20,8 @@ class LeitaiManager implements Callback {
 
   int lastRequestId;
 
-  int id = 1;
+  int id = 0;
+  int count = 0;
 
   init(Function initSuccess) {
     this.initSuccess = initSuccess;
@@ -74,7 +75,7 @@ class LeitaiManager implements Callback {
     map['request_type'] = '1002';
     map['longtitude'] = currentLon;
     map['latitude'] = currentLat;
-    int requestid = id++;
+    int requestid = ++id;
     map['requestid'] = requestid;
     map['platform'] = '0';
     lastRequestId = requestid;
@@ -90,6 +91,7 @@ class LeitaiManager implements Callback {
 
   @override
   onReceiveData(Map<String, dynamic> resultMap) {
+    count++;
     List<dynamic> tempList = resultMap['dojo_list'];
     List<Leitai> leitaiList = List();
     if (tempList == null || tempList.isEmpty) {
@@ -103,8 +105,10 @@ class LeitaiManager implements Callback {
       }
     });
     print('扫描到擂台${leitaiList.length}个');
-    if (leitaiList.isNotEmpty) {
-      callback(leitaiList);
+    if (count == id) {
+      callback(leitaiList, '扫描完成');
+    } else {
+      callback(leitaiList, '已扫描$count次，共有$id块区域');
     }
   }
 }
