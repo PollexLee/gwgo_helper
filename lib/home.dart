@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gwgo_helper/utils/dialog_utils.dart';
 import 'page/leitai_page.dart';
 import 'promise.dart';
 import 'dart:io';
@@ -38,22 +39,24 @@ class HomePage extends StatelessWidget {
           child: Column(
         children: <Widget>[
           Container(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: titleList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _buildItem(index);
-              },
+            child: Column(
+              children: _buildBody(),
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 20),
+            padding: EdgeInsets.only(top: 20, bottom: 20),
             child: TimeWidget(),
           ),
         ],
       )),
     );
+  }
+
+  List<Widget> _buildBody() {
+    int index = 0;
+    return titleList.map<Widget>((item) {
+      return _buildItem(index++);
+    }).toList();
   }
 
   Widget _buildItem(int index) {
@@ -199,7 +202,7 @@ class DrawerState extends State<DrawerLayout> {
         primary: true,
         child: Container(
           color: Colors.white,
-          height: 800,
+          height: 850,
           width: 200,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,6 +240,16 @@ class DrawerState extends State<DrawerLayout> {
               },
               value: isOpenFly,
             ),
+            IconButton(
+              icon: Icon(
+                Icons.assignment,
+                color: Colors.blue,
+              ),
+              onPressed: () {
+                DialogUtils.showNoticeDialog(
+                    context, '开启 - 调用飞行器飞到妖灵位置；\n\n关闭 - 复制经纬度到粘贴板。');
+              },
+            ),
             Expanded(child: Container()),
           ],
         ),
@@ -263,6 +276,16 @@ class DrawerState extends State<DrawerLayout> {
               },
               value: isOpenMultiFly,
             ),
+            IconButton(
+              icon: Icon(
+                Icons.assignment,
+                color: Colors.blue,
+              ),
+              onPressed: () {
+                DialogUtils.showNoticeDialog(context,
+                    '开启飞行时有效！！！\n\n开启 - 使用安全距离多次飞行到目地低\n\n关闭 - 一次性直接飞行到目地低');
+              },
+            ),
             Expanded(child: Container()),
           ],
         ),
@@ -279,9 +302,24 @@ class DrawerState extends State<DrawerLayout> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text(
-              '选择妖灵范围',
-              style: titleStyle,
+            Row(
+              children: <Widget>[
+                Text(
+                  '选择妖灵范围',
+                  style: titleStyle,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.assignment,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () {
+                    DialogUtils.showNoticeDialog(context,
+                        '扫描位置是 - 我的周围 时有效！！！\n\n 极小 - 适用于活动妖灵\n小 - 适用于稀有妖灵\n中、大 - 适用于附近妖灵比较少的场景（农村），有软封风险！');
+                  },
+                ),
+                Expanded(child: Container()),
+              ],
             ),
             Container(
               alignment: Alignment.topLeft,
@@ -325,9 +363,24 @@ class DrawerState extends State<DrawerLayout> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text(
-              '选择扫描位置',
-              style: titleStyle,
+            Row(
+              children: <Widget>[
+                Text(
+                  '选择扫描位置',
+                  style: titleStyle,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.assignment,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () {
+                    DialogUtils.showNoticeDialog(context,
+                        '我的周围 - 扫描虚拟位置或真实位置附近区域，可配合妖灵范围使用\n其它城市 - 已设置好的其它城市市区区间\n\n提示：远距离飞行有风险，使用须谨慎！');
+                  },
+                ),
+                Expanded(child: Container()),
+              ],
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,3 +1,4 @@
+import 'package:gwgo_helper/yaoling.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'model/location.dart';
@@ -24,6 +25,9 @@ final int leitai_distance = 140000;
 final String yaolingRangeKey = 'YaolingRangeKey';
 String rangeSelect = '小';
 final List<String> rangeList = ['极小','小', '中', '大'];
+
+  // 点击过的妖灵数据
+  List<Yaoling> clickYaolingData = List();
 
 final String openMultiFlyKey = 'OpenMultiFlyKey';
 bool isOpenMultiFly = true;

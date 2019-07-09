@@ -104,6 +104,9 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         Color color = getNextColor();
         data.forEach((item) {
+          if (item.isClick == false && clickYaolingData.contains(item)) {
+            item.isClick = true;
+          }
           item.color = color;
         });
         yaolingData.addAll(data);
@@ -154,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
         widgetList.add(YaolingWidget(
           yaoling,
           onTap: () {
+            clickYaolingData.add(yaoling);
             utils.teleport(yaoling.latitude / 1e6, yaoling.longtitude / 1e6);
           },
         ));

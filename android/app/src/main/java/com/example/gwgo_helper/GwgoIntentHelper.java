@@ -60,8 +60,8 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
             double lon = methodCall.argument("lon");
 
             PackageManager packageManager = activity.getPackageManager();
-            Intent xiaomogeIntent = packageManager.getLaunchIntentForPackage("com.tencent.xiaozhubo");
-            if (xiaomogeIntent == null) {
+            Intent xiaozhuboIntent = packageManager.getLaunchIntentForPackage("com.tencent.xiaozhubo");
+            if (xiaozhuboIntent == null) {
                 return;
             }
             Intent intent = new Intent("com.xiaozhubo.TELEPORT");
@@ -72,7 +72,7 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
             try {
                 ComponentName componentName = activity.startService(intent);
 
-                Toast.makeText(activity, "成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "飞行中...", Toast.LENGTH_SHORT).show();
 
                 Intent intent2 = packageManager.getLaunchIntentForPackage("com.tencent.gwgo");
                 if (intent2 == null) {

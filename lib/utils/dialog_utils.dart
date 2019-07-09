@@ -34,21 +34,11 @@ class DialogUtils {
               ),
               RaisedButton(
                 child: Text(
-                  '复制QQ号',
+                  '马上激活',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
-                  Clipboard.setData(ClipboardData(text: '3234991420'));
-                  toast('已复制QQ号码');
-                },
-              ),
-              RaisedButton(
-                child: Text(
-                  '知道了',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.popAndPushNamed(context, '/juanzhu');
                 },
               ),
             ],
@@ -85,6 +75,28 @@ class DialogUtils {
           return AlertDialog(
             title: Text('提示'),
             content: Text('请授予指示器获取位置权限和获取手机信息权限'),
+            actions: <Widget>[
+              RaisedButton(
+                child: Text(
+                  '知道了',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+    static showNoticeDialog(BuildContext context, String content) {
+    showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('提示'),
+            content: Text(content),
             actions: <Widget>[
               RaisedButton(
                 child: Text(

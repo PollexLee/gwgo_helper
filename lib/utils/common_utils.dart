@@ -14,11 +14,13 @@ const jumpPlugin = const MethodChannel('com.pollex.gwgo/plugin');
 Future teleport(double lat, double lon) async {
   // 计算目地位置
   List<double> wgsLocation = gcj02towgs84(lon, lat);
-  // 复制到粘贴板
-  Clipboard.setData(ClipboardData(text: '${wgsLocation[1]},${wgsLocation[0]}'));
+
   if (isOpenFly) {
     _flyFromTo(wgsLocation[1], wgsLocation[0]);
   } else {
+    // 复制到粘贴板
+    Clipboard.setData(
+        ClipboardData(text: '${wgsLocation[1]},${wgsLocation[0]}'));
     toast('已复制经纬度');
   }
 }

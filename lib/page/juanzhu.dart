@@ -32,7 +32,7 @@ class JuanzhuState extends State<JuanzhuPage> {
         child: Column(
           children: <Widget>[
             Text(
-                '版本号 ${widget.version} \n飞行指示器会不定期更新，有定制需求可随时联系。\n\n编码不易，捐助支持。'),
+                '版本号 ${widget.version} \n\n扫描如下付款图片付款'),
             // Card(
             //   margin: EdgeInsets.only(top: 20),
             //   child: Container(

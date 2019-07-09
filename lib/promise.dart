@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import './utils/common_utils.dart';
 import './utils/dialog_utils.dart';
+
+import 'package:crypto/crypto.dart';
 
 /// 用户授权单例
 class PromiseInstance {
@@ -13,6 +16,8 @@ class PromiseInstance {
   final int MONTH_TIME = 2592000000;
   final int WEEK_TIME = 604800000;
   final int THREE_DAY_TIME = 259200000;
+  final int ONE_DAY_TIME = 86400000;
+
 // imei数据
   List<String> imeiList = List();
   // 网络时间
@@ -56,6 +61,29 @@ class PromiseInstance {
     if (netTime <= 0) {
       DialogUtils.showNetworkErrorDialog(context);
       return;
+    }
+
+    // filterMyDeviceInfo(context);
+  }
+
+  filterMyDeviceInfo(BuildContext context) async {
+    var dio = Dio();
+    int time = DateTime.now().millisecondsSinceEpoch;
+    var key = sha1.convert(utf8
+        .encode('A6016315668944UZ11F00C29-2866-FC65-D73D-B7120B1A5A57UZ$time'));
+    dio.options.headers.addAll({
+      'X-APICloud-AppId': 'A6016315668944',
+      'X-APICloud-AppKey': '${key.toString()}.$time',
+      'Content-Type': 'application/json',
+      'authorization':
+          'b2cdqvHlVjHuScmCMVkBNSmrt8ZIBW9VowfmN24WzsK5bR9GlZIz6AaW3PODlCDV',
+    });
+    try {
+      Response response = await dio
+          .get('https://d.apicloud.com//mcm/api/user/5d1da2f29b93c6453bae99dd');
+      print(response.data);
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -134,7 +162,6 @@ class PromiseInstance {
       '861608042620979': commonTime,
       '863175042352415': commonTime,
       '868580047897212': commonTime,
-      '861945035994403': commonTime,
       '99000963669917': commonTime,
       '864454033324140': commonTime,
       'A000009EF2F42E': commonTime,
@@ -145,8 +172,8 @@ class PromiseInstance {
 
     Map<String, int> vipMap = {
       '358240051111110': 1860700800000,
-      '869285032737089': 1930700800000, // 自己设备
-      'A00000966CDA2F': 1561824000000, // 6月29日 ~不懂夜の黑~
+      // '869285032737089': 1930700800000, // 自己设备
+      'A00000966CDA2F': 1562239885000 + MONTH_TIME, // 6月29日 ~不懂夜の黑~
       '99001235131048': 1561824000000, // 6月29日
       '868179045254391': 1561824000000, // 6月29日
       'A000009B43460D': 1561984743000 + WEEK_TIME, // 6月30日 颜校长
@@ -169,14 +196,14 @@ class PromiseInstance {
       '863505034241657': 1562116883000 + WEEK_TIME, // 迷茫的云
       '865749038394496': 1561478400000 + MONTH_TIME, // 二号飞行员
       '862904031088636': 1561478400000 + WEEK_TIME, // 偏爱
-      '865883040063771': 1561651200000 + WEEK_TIME, // 铅笔大人
+      '865883040063771': 1561651200000 + WEEK_TIME * 2, // 铅笔大人
       '355757010442537': 1561651200000 + MONTH_TIME, // 安和桥
       '99001093091401': 1561651200000 + MONTH_TIME + THREE_DAY_TIME, // 云
       '868240038271626': 1561651200000 + WEEK_TIME + THREE_DAY_TIME, // yun
-      'A0000089B3729A': 1561651200000 + WEEK_TIME + THREE_DAY_TIME, // yun
+      'A0000089B3729A': 1562574997000 + MONTH_TIME, // yun
       '864758040117358': 1561651200000 + WEEK_TIME + THREE_DAY_TIME, // yun
-      '867684031532792': 1561651200000 + WEEK_TIME + THREE_DAY_TIME, // yun
-      '863813047442530': 1561651200000 + WEEK_TIME + THREE_DAY_TIME, // yun
+      '867684031532792': 1562557536000 + MONTH_TIME, // 孑系子龙
+      '863813047442530': 1562503696000 + MONTH_TIME, // yun
       '868217038528023': 1561651200000 + WEEK_TIME + THREE_DAY_TIME, // yun
       'A000009A195687': 1561651200000 + WEEK_TIME + THREE_DAY_TIME, // yun
       '862255038991243': 1561651200000 + WEEK_TIME + THREE_DAY_TIME, // yun
@@ -184,16 +211,41 @@ class PromiseInstance {
       '865964033913592': 1561651200000 + MONTH_TIME + THREE_DAY_TIME, // yun
       '869456037190158': 1561775248000 + WEEK_TIME, // ✡
       'A0000085790C6C': 1561775248000 + MONTH_TIME, // yun
-      '867194048095767': 1561775248000 + WEEK_TIME, // 秋的月
-      '865968032271993': 1561775248000 + WEEK_TIME, // yun
-      '866400033192506': 1561775248000 + MONTH_TIME, // 列奥纳多.
-      '862495040771056': 1561824417000 + WEEK_TIME, // yun
+      '867194048095767': 1561775248000 + WEEK_TIME + MONTH_TIME, // 秋的月
+      '865968032271993': 1562658749000 + MONTH_TIME, // 兰陵不笑生
+      '866400033192506': 1561775248000 + MONTH_TIME + ONE_DAY_TIME, // 列奥纳多.
+      '862495040771056' : 1562597267000 + MONTH_TIME, // 捉妖小商
       '862537037930102': 1561968468000 + MONTH_TIME, // 醉臥美人膝
       '865579039536682': 1562037513000 + MONTH_TIME, // 晨光熹微
       '867601030359290': 1562055675000 + MONTH_TIME * 2, // ;
       '867955030534306': 1562140140000 + MONTH_TIME, // 原来你还在这里
+      '861742039637371': 1562159057000 + WEEK_TIME, // yun
+      '869832041816337': 1562168035000 + MONTH_TIME, // qianbi
+      '868734037803298': 1562202490000 + MONTH_TIME, // qianbi
+      '865676033894404': 1562342439000 + WEEK_TIME, // 动心
+      '868030034803963': 1562210049000 + MONTH_TIME, // qianbi
+      '869810034744039': 1562219399000 + MONTH_TIME, // qianbi
+      '862856043482613': 1562219982000 + MONTH_TIME, // qianbi
+      '868233034604734': 1562220681000 + MONTH_TIME, // qianbi
+      '865738030126006': 1562239842000 + MONTH_TIME, // 秋的月 2
+      '99001284335416': 1562253606000 + MONTH_TIME, // 时与.
+      '869189043226019': 1562293444000 + WEEK_TIME, // 三岁奶猫
+      '861945035994403': 1562295172000 + WEEK_TIME, // 琴断弦奈何
+      '868897037623212': 1562303261000 + MONTH_TIME, // qianbi
+      '863295033832173': 1562317321000 + MONTH_TIME, // qianbi
+      '990009269237544': 1562336894000 + MONTH_TIME, // qianbi
+      '866378035770273': 1562342439000 + MONTH_TIME, // 月
+      '860482035999704': 1562342439000 + WEEK_TIME, // 椿风
+      '865441032892747': 1562497821000 + MONTH_TIME, // qianbi
+      '358533080056524': 1562497821000 + MONTH_TIME, // qianbi
+      '861348043044438': 1562551952000 + MONTH_TIME, // qianbi
+      '99001116055291': 1562571856000 + MONTH_TIME, // qianbi
+      '866778033021241' : 1562576039000 + MONTH_TIME, // qianbi
+      '867252032118795' : 1562582047000 + MONTH_TIME, // Loco
+      '863957042025657' : 1562658713000 + MONTH_TIME, // qianbi
+      '869011038242837' : 1562659623000 + MONTH_TIME, // qianbi
+      '868179048017233' : 1562663252999 + MONTH_TIME, // qianbi
     };
-
     currentMap.addAll(vipMap);
     currentMap.addAll(registMap);
   }
