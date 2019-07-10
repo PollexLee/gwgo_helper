@@ -24,15 +24,17 @@ final int leitai_distance = 140000;
 
 final String yaolingRangeKey = 'YaolingRangeKey';
 String rangeSelect = '小';
-final List<String> rangeList = ['极小','小', '中', '大'];
+final List<String> rangeList = ['极小', '小', '中', '大'];
 
-  // 点击过的妖灵数据
-  List<Yaoling> clickYaolingData = List();
+// 点击过的妖灵数据
+List<Yaoling> clickYaolingData = List();
 
 final String openMultiFlyKey = 'OpenMultiFlyKey';
 bool isOpenMultiFly = true;
 final String openFlyKey = 'OpenFlyKey';
 bool isOpenFly = true;
+final String startAirKey = 'startAirKey';
+bool isStartAir = true;
 
 final String locationKey = 'LocationKey';
 final List<MockLocation> startList = [
@@ -67,6 +69,12 @@ final List<MockLocation> endList = [
 // 选中的
 String selectedDemon = xiyouList[0];
 
+setStartAir(bool open) async {
+  isStartAir = open;
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.setBool(startAirKey, open);
+}
+
 setOpenMultiFly(bool open) async {
   isOpenMultiFly = open;
   SharedPreferences pref = await SharedPreferences.getInstance();
@@ -93,27 +101,33 @@ saveLocationRange() async {
 
 class Config {
   static init() async {
+    // 初始化 多次飞行
     SharedPreferences pref = await SharedPreferences.getInstance();
     isOpenMultiFly = pref.getBool(openMultiFlyKey);
     if (null == isOpenMultiFly) {
       isOpenMultiFly = true;
     }
     print('isOpenMultiFly = $isOpenMultiFly');
-
+    // 初始化 开启飞行
     isOpenFly = pref.getBool(openFlyKey);
     if (null == isOpenFly) {
       isOpenFly = true;
     }
     print('isOpenFly = $isOpenFly');
-
+    // 初始化 扫描范围
     rangeSelect = pref.getString(yaolingRangeKey);
     if (null == rangeSelect) {
       rangeSelect = '小';
     }
-
+    // 初始化 已选择妖灵
     selectedDemon = pref.getString(locationKey);
     if (null == selectedDemon) {
       selectedDemon = xiyouList[0];
+    }
+    // 初始化 自动启动游戏
+    isStartAir = pref.getBool(startAirKey);
+    if (null == isStartAir) {
+      isStartAir = true;
     }
   }
 }

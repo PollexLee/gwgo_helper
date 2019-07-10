@@ -46,11 +46,13 @@ class HomePage extends StatelessWidget {
                 Icons.place,
                 color: Colors.white,
               ),
-              onPressed: (){
-
+              onPressed: () async {
+                if (await PromiseInstance(context).isPromise(context)) {
+                  openAir();
+                }
               },
             ),
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -221,13 +223,14 @@ class DrawerState extends State<DrawerLayout> {
         child: Container(
           color: Colors.white,
           height: 850,
-          width: 200,
+          width: 230,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               _buildFlyWidgets(),
               _buildMultiFlyWidgets(),
+              _buildStartAirWidgets(),
               _buildYaolingRangeWidget(),
               Expanded(
                 child: _buildLocationDrawer(),
@@ -302,6 +305,42 @@ class DrawerState extends State<DrawerLayout> {
               onPressed: () {
                 DialogUtils.showNoticeDialog(context,
                     '开启飞行时有效！！！\n\n开启 - 使用安全距离多次飞行到目地低\n\n关闭 - 一次性直接飞行到目地低');
+              },
+            ),
+            Expanded(child: Container()),
+          ],
+        ),
+      ),
+    );
+  }
+
+    Widget _buildStartAirWidgets() {
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.only(left: 22),
+        child: Row(
+          children: <Widget>[
+            Text(
+              "自动启动游戏",
+              style: TextStyle(color: Colors.black),
+            ),
+            Switch(
+              onChanged: (bool value) {
+                setStartAir(value);
+                setState(() {});
+                print('现在是$isStartAir');
+              },
+              value: isStartAir,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.assignment,
+                color: Colors.blue,
+              ),
+              onPressed: () {
+                DialogUtils.showNoticeDialog(context,
+                    '开启飞行时有效！！！\n\n开启 - 点击妖灵头像，自动切换到游戏\n\n关闭 - 点击妖灵头像，不自动切换到游戏');
               },
             ),
             Expanded(child: Container()),

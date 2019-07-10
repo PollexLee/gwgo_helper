@@ -72,7 +72,11 @@ _flyFromTo(double toLat, double toLon) async {
 
 _fly(double flyLat, double flyLon) async {
   if (Platform.isAndroid) {
-    Map<String, dynamic> map = {"lat": flyLat, 'lon': flyLon};
+    Map<String, dynamic> map = {
+      "lat": flyLat,
+      'lon': flyLon,
+      'startGame': isStartAir
+    };
     String result = await jumpPlugin.invokeMethod('teleport', map);
     print(result);
   }
@@ -138,10 +142,5 @@ Future<Map<String, dynamic>> getDeviceImei() => jumpPlugin
 Future<String> toast(String content) =>
     jumpPlugin.invokeMethod('toast', content);
 
-
 /// 启动飞行器
-Future<String> openAir() async{
-
-
-
-}
+Future<String> openAir() => jumpPlugin.invokeMethod('openAir');

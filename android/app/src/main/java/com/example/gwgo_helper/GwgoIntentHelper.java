@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -58,27 +59,34 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
         if (methodCall.method.equals("teleport")) {
             double lat = methodCall.argument("lat");
             double lon = methodCall.argument("lon");
+            boolean isStartGame = methodCall.argument("startGame");
 
-            PackageManager packageManager = activity.getPackageManager();
-            Intent xiaozhuboIntent = packageManager.getLaunchIntentForPackage("com.tencent.xiaozhubo");
-            if (xiaozhuboIntent == null) {
-                return;
-            }
-            Intent intent = new Intent("com.xiaozhubo.TELEPORT");
-            intent.putExtra("lat", (float) lat);
-            intent.putExtra("lng", (float) lon);
-            intent.putExtra("alt", 1.666f);
-            intent.setPackage("com.tencent.xiaozhubo");
             try {
+                PackageManager packageManager = activity.getPackageManager();
+
+                PackageInfo airPackageInfo = packageManager.getPackageInfo("com.tencent.yaota", 0);
+                if (airPackageInfo == null) {
+                    Toast.makeText(activity, "没有安装匹配飞行器，请联系qq获取", Toast.LENGTH_LONG).show();
+
+                    return;
+                }
+
+                Intent intent = new Intent("com.yaota.TELEPORT");
+                intent.putExtra("lat", (float) lat);
+                intent.putExtra("lng", (float) lon);
+                intent.putExtra("alt", 1.666f);
+                intent.setPackage("com.tencent.yaota");
+
                 ComponentName componentName = activity.startService(intent);
 
                 Toast.makeText(activity, "飞行中...", Toast.LENGTH_SHORT).show();
-
-                Intent intent2 = packageManager.getLaunchIntentForPackage("com.tencent.gwgo");
-                if (intent2 == null) {
-                    Toast.makeText(activity, "未安装", Toast.LENGTH_LONG).show();
-                } else {
-                    activity.startActivity(intent2);
+                if (isStartGame) {
+                    Intent intent2 = packageManager.getLaunchIntentForPackage("com.tencent.gwgo");
+                    if (intent2 == null) {
+                        Toast.makeText(activity, "未安装", Toast.LENGTH_LONG).show();
+                    } else {
+                        activity.startActivity(intent2);
+                    }
                 }
             } catch (Exception e) {
                 Log.e("GwgoInterHelper", e.getLocalizedMessage());
@@ -112,10 +120,19 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
             Map<String, List<String>> params = new HashMap<>();
             params.put("imei", imeiList);
             result.success(params);
-        } else if (methodCall.method.equals("toast")){
+        } else if (methodCall.method.equals("toast")) {
             String content = (String) methodCall.arguments;
             Toast.makeText(activity, content, Toast.LENGTH_SHORT).show();
             result.success("success");
+        } else if (methodCall.method.equals("openAir")) {
+            Log.d("", "指示器打开飞行器");
+            try {
+                Intent intent = new Intent();
+                intent.setClassName("com.tencent.yaota", "com.theappninjas.fakegpsjoystick.ui.main.MainActivity");
+                activity.startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(activity, "启动飞行器异常，请确认是否安装匹配的飞行器", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
