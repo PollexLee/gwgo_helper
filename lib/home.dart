@@ -34,7 +34,25 @@ class HomePage extends StatelessWidget {
     PromiseInstance(context);
     return Scaffold(
       drawer: DrawerLayout(),
-      appBar: AppBar(title: Text('飞行指示器')),
+      appBar: AppBar(
+        title: Text('飞行指示器'),
+        actions: <Widget>[
+          Container(
+            height: 50,
+            alignment: Alignment.center,
+            margin: EdgeInsets.only(right: 15),
+            child: IconButton(
+              icon: Icon(
+                Icons.place,
+                color: Colors.white,
+              ),
+              onPressed: (){
+
+              },
+            ),
+          )
+        ],
+      ),
       body: SingleChildScrollView(
           child: Column(
         children: <Widget>[

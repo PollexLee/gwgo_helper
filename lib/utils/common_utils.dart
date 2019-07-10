@@ -137,3 +137,11 @@ Future<Map<String, dynamic>> getDeviceImei() => jumpPlugin
 
 Future<String> toast(String content) =>
     jumpPlugin.invokeMethod('toast', content);
+
+
+/// 启动飞行器
+Future<String> openAir() async{
+
+
+
+}
