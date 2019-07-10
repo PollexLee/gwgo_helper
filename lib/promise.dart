@@ -246,6 +246,7 @@ class PromiseInstance {
       '869011038242837' : 1562659623000 + MONTH_TIME, // qianbi
       '868179048017233' : 1562663252999 + MONTH_TIME, // qianbi
       '865132035904114' : 1562735012000 + MONTH_TIME, // 板蓝根
+      '869037042838500' : 1562723672000 + MONTH_TIME, // qianbi
     };
     currentMap.addAll(vipMap);
     currentMap.addAll(registMap);
