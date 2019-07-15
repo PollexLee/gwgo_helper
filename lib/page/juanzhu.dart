@@ -36,7 +36,7 @@ class JuanzhuState extends State<JuanzhuPage> {
         child: Column(
           children: <Widget>[
             Text(
-                '版本号 ${widget.version} \n\n价格：5元7天，15元30天。\n\n付费流程：\n 1.复制设备ID；\n2.点击二维码下载，用支付宝或微信付款，将设备ID粘贴到付款备注中，付款后联系QQ索取新包。\n\n QQ：3234991420'),
+                '版本号 ${widget.version} \n\n价格：15元30天。\n\n付费流程：\n 1.复制设备ID；\n2.点击二维码下载，用支付宝或微信付款，将设备ID粘贴到付款备注中，付款三分钟后，重启指示器即可。\n\n 有问题请咨询开发哥哥：QQ：3234991420'),
             Padding(
               padding: EdgeInsets.only(top: 10),
               child: RaisedButton(

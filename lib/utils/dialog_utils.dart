@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gwgo_helper/utils/common_utils.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class DialogUtils {
+  static ProgressDialog _progressDialog;
+
   static showExitDialog(BuildContext context) {}
 
   static showRegistDialog(BuildContext context, String deviceId, isRegiste) {
@@ -90,7 +93,7 @@ class DialogUtils {
         });
   }
 
-    static showNoticeDialog(BuildContext context, String content) {
+  static showNoticeDialog(BuildContext context, String content) {
     showCupertinoDialog(
         context: context,
         builder: (context) {
@@ -110,5 +113,28 @@ class DialogUtils {
             ],
           );
         });
+  }
+
+  /// 显示loading
+  static showProgressDialog(BuildContext context, String message) {
+    _progressDialog = ProgressDialog(context, ProgressDialogType.Normal);
+    _progressDialog.setMessage(message);
+    _progressDialog.show();
+  }
+
+  /// 更新loading文案
+  static updateProgressDialog(BuildContext context, String message) {
+    if (_progressDialog == null) {
+      showProgressDialog(context, message);
+    } else {
+      _progressDialog.setMessage(message);
+    }
+  }
+
+  /// 隐藏loading
+  static hideProgressDialog() {
+    if (null != _progressDialog && _progressDialog.isShowing()) {
+      _progressDialog.hide();
+    }
   }
 }

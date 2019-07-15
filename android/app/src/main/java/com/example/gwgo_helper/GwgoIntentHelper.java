@@ -129,6 +129,7 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
             try {
                 Intent intent = new Intent();
                 intent.setClassName("com.tencent.yaota", "com.theappninjas.fakegpsjoystick.ui.main.MainActivity");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 activity.startActivity(intent);
             } catch (Exception e) {
                 Toast.makeText(activity, "启动飞行器异常，请确认是否安装匹配的飞行器", Toast.LENGTH_LONG).show();

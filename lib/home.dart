@@ -31,6 +31,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this.context = context;
+    /// 加载注册数据
     PromiseInstance(context);
     return Scaffold(
       drawer: DrawerLayout(),
@@ -222,7 +223,7 @@ class DrawerState extends State<DrawerLayout> {
         primary: true,
         child: Container(
           color: Colors.white,
-          height: 850,
+          height: 880,
           width: 230,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
