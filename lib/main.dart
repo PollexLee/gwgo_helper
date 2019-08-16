@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gwgo_helper/manager/yaoling_manager.dart';
+import 'package:gwgo_helper/page/help.dart';
+import 'package:gwgo_helper/page/indicator.dart';
 import 'package:gwgo_helper/page/juanzhu.dart';
+import 'package:gwgo_helper/page/plain_setting_page.dart';
 import 'package:gwgo_helper/page/select_yaoling_page.dart';
 import 'package:gwgo_helper/widget/yaoling_widget.dart';
 import 'home.dart';
-import 'manager/location_manager.dart';
 import 'manager/yaoling_info.dart';
 import 'yaoling.dart';
 import 'sprite_ids.dart';
@@ -20,14 +22,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // 初始化妖灵数据
     YaolingInfoManager().init();
+    // 初始化妖灵配置
+    SpriteConfig.init();
+    
     try {
-      Config.init();
+      Config.init(context);
     } catch (exception) {
       print(exception);
     }
 
-    // 初始化妖灵配置
-    SpriteConfig.init();
     return MaterialApp(
       title: '飞行指示器',
       theme: ThemeData(
@@ -38,6 +41,9 @@ class MyApp extends StatelessWidget {
         '/yaoling': (context) => MyHomePage(title: '稀有'),
         '/juanzhu': (context) => JuanzhuPage(),
         '/selectYaoling': (context) => SelectYaolingPage(),
+        '/plainSetting': (context) => PlainSettingPage(),
+        '/indicator': (context) => IndicatorPage(),
+        '/help': (context) => HelpPage(),
       },
     );
   }
@@ -130,8 +136,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       key: key,
       appBar: AppBar(
-        title: Text(
-            widget.title + ' - ' + selectedDemon + ' - ${yaolingData.length}个'),
+        title: Text(widget.title +
+            ' - ' +
+            selectedLocation +
+            ' - ${yaolingData.length}个'),
       ),
       body: SingleChildScrollView(
         child: Column(

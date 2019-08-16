@@ -1,15 +1,25 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:gwgo_helper/manager/location_manager.dart';
+import 'package:gwgo_helper/model/leitai.dart';
 import 'dart:math';
-
 import 'package:gwgo_helper/model/location.dart';
-
 import '../config.dart';
 
 //获取到插件与原生的交互通道
 const jumpPlugin = const MethodChannel('com.pollex.gwgo/plugin');
+
+startSelectLocation(Function listener){
+jumpPlugin.setMethodCallHandler((MethodCall call) async {
+    assert(call.method == 'setMockLocation');
+    print('setMockLocation, 参数是：${call.arguments}');
+    listener(call.arguments.toString());
+  });
+
+  mackLocation();
+}
 
 Future teleport(double lat, double lon) async {
   // 计算目地位置
@@ -42,13 +52,14 @@ _flyFromTo(double toLat, double toLon) async {
     print('间隔距离是：$distance');
     if (!isOpenMultiFly) {
       // 没有开启多次飞行
-      await _fly(toLat, toLon);
+      await _fly(toLat, toLon, isStartAir);
       print('飞行结束');
     } else {
       if (distance < 0.04) {
         // 一次飞行
-        await _fly(toLat, toLon);
+        await _fly(toLat, toLon, isStartAir);
         print('飞行结束');
+        toast('到达目地低');
       } else {
         // todo  多次分行 计算还有问题
         print('飞行了一次，还要继续飞行');
@@ -58,7 +69,7 @@ _flyFromTo(double toLat, double toLon) async {
         var moveLat = latDiff / biggest * 0.01;
         var moveLon = lonDiff / biggest * 0.01;
         _fly(double.parse((location.latitude + moveLat).toStringAsFixed(6)),
-            double.parse((location.longitude + moveLon).toStringAsFixed(6)));
+            double.parse((location.longitude + moveLon).toStringAsFixed(6)), isStartAir);
         Timer(Duration(seconds: 2), () {
           _flyFromTo(toLat, toLon);
         });
@@ -70,12 +81,13 @@ _flyFromTo(double toLat, double toLon) async {
   }
 }
 
-_fly(double flyLat, double flyLon) async {
+_fly(double flyLat, double flyLon, bool startGame) async {
   if (Platform.isAndroid) {
     Map<String, dynamic> map = {
       "lat": flyLat,
       'lon': flyLon,
-      'startGame': isStartAir
+      'startGame': startGame,
+      'plain': selectPlain,
     };
     String result = await jumpPlugin.invokeMethod('teleport', map);
     print(result);
@@ -143,4 +155,26 @@ Future<String> toast(String content) =>
     jumpPlugin.invokeMethod('toast', content);
 
 /// 启动飞行器
-Future<String> openAir() => jumpPlugin.invokeMethod('openAir');
+dynamic openAir(double flyLat, double flyLon, bool start) async {
+  Map<String, dynamic> map = {"lat": flyLat, 'lon': flyLon, 'start': start};
+  return await jumpPlugin.invokeMethod('openAir', map);
+}
+
+dynamic getAirStatus() async {
+  return await jumpPlugin.invokeMethod('getAirStatus');
+}
+
+dynamic setFloatVisiable(bool visiable) async {
+  Map<String, dynamic> map = {"float": visiable};
+  return await jumpPlugin.invokeMethod('float', map);
+}
+
+dynamic leitaiMap(List<Leitai> leitaiList) async {
+  String params = jsonEncode(leitaiList);
+  print(params);
+  await jumpPlugin.invokeMethod('leitaiMap', params);
+}
+
+dynamic mackLocation() async {
+  await jumpPlugin.invokeMethod('mockLocation');
+}

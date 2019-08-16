@@ -32,7 +32,8 @@ class YaolingInfoManager implements Callback {
     Map<String, dynamic> map = HashMap();
     JsonCodec jsonCodec = JsonCodec();
     map['request_type'] = '1004';
-    int requestid = int.parse(DateTime.now().millisecondsSinceEpoch.toString().substring(8));
+    int requestid = int.parse(
+        DateTime.now().millisecondsSinceEpoch.toString().substring(8));
     map['requestid'] = requestid;
     map['platform'] = 0;
     map['cfg_type'] = 1;
@@ -41,7 +42,6 @@ class YaolingInfoManager implements Callback {
 
   @override
   onError(int code) {
-
     return null;
   }
 
@@ -68,5 +68,16 @@ class YaolingInfoManager implements Callback {
     });
 
     return null;
+  }
+
+  /// 获取妖灵名称
+  static String getYaolingName(int id) {
+    if (id == 2200267) {
+      return '香奴儿';
+    }
+    if (yaolingMap[id] == null) {
+      return "未知";
+    }
+    return yaolingMap[id].Name;
   }
 }

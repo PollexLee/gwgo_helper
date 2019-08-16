@@ -19,7 +19,6 @@ class PlatformWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -79,6 +78,12 @@ class PlatformWidget extends StatelessWidget {
                           style: TextStyle(fontSize: 15, color: Colors.black),
                         ),
                       ]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text('妖灵总战力：${_leitai.getYaolingPower()}'),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -89,11 +94,18 @@ class PlatformWidget extends StatelessWidget {
   }
 
   String _getYaolingPic(int id) {
+    // 亮彩香玉
     if (id == 2200267) {
       return 'https://hy.gwgo.qq.com/sync/pet/small/200267.png';
     }
+    if (id > 2200000) {
+      // 是亮彩
+      id = id - 200000;
+    }
+
     if (YaolingInfoManager.yaolingMap[id] == null) {
       print('这个id没有数据：$id');
+      // 2200433
       return '';
     } else {
       return YaolingInfoManager.yaolingMap[id].SmallImgPath;
@@ -102,11 +114,19 @@ class PlatformWidget extends StatelessWidget {
 
   String _getYaolingName(int id) {
     if (id == 2200267) {
-      return '香奴儿';
+      return '亮彩香奴儿';
     }
+    var nameSb = "";
+
+    // 是亮彩
+    if (id > 2200000) {
+      id = id - 200000;
+      nameSb += "亮彩";
+    }
+
     if (YaolingInfoManager.yaolingMap[id] == null) {
       return "未知";
     }
-    return YaolingInfoManager.yaolingMap[id].Name;
+    return nameSb + YaolingInfoManager.yaolingMap[id].Name;
   }
 }

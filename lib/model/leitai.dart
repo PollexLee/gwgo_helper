@@ -1,3 +1,6 @@
+import 'dart:collection';
+import 'dart:convert' show JSON;
+
 /// 擂台数据结构
 class Leitai {
   /**
@@ -21,6 +24,7 @@ class Leitai {
   List<Sprite> sprite_list;
   String winner_name;
   int winner_fightpower;
+  String bossname;
 
   Leitai(
       {this.state,
@@ -89,8 +93,26 @@ class Leitai {
     return state == 0;
   }
 
-  int getYaolingPower(){
-    return sprite_list[0].fightpower + sprite_list[1].fightpower + sprite_list[2].fightpower;
+  int getYaolingPower() {
+    return sprite_list[0].fightpower +
+        sprite_list[1].fightpower +
+        sprite_list[2].fightpower;
+  }
+
+  Map toJson() {
+    Map map = Map();
+    map['starlevel'] = starlevel;
+    map['latitude'] = latitude;
+    map['latitude'] = latitude;
+    map['longtitude'] = longtitude;
+    map['freshtime'] = freshtime;
+    map['bosslevel'] = bosslevel;
+    map['bossid'] = bossid;
+    map['bossfightpower'] = bossfightpower;
+    map['sprite_list'] = sprite_list;
+    map['winner_name'] = winner_name;
+    map['winner_fightpower'] = winner_fightpower;
+    return map;
   }
 }
 
@@ -108,5 +130,14 @@ class Sprite {
       fightpower: json['fightpower'],
       spriteid: json['spriteid'],
     );
+  }
+
+  Map toJson(){
+    Map map = Map();
+    map['level'] = level;
+    map['fightpower'] = fightpower;
+    map['spriteid'] = spriteid;
+    map['name'] = name;
+    return map;
   }
 }

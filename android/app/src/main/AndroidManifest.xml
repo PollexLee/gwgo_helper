@@ -1,5 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.gwgo_helper">
+
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission." />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -8,18 +15,40 @@
          FlutterApplication and put your custom class here. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!--腾讯地图 SDK 要求的权限(开始)-->
+    <!--访问网络获取地图服务-->
+    <!--检查网络可用性-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 访问WiFi状态 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--需要外部存储写权限用于保存地图缓存-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--获取 device id 辨别设备-->
+    <!--腾讯地图 SDK 要求的权限(结束)-->
 
     <application
         android:name="io.flutter.app.FlutterApplication"
+        android:debuggable="true"
+        android:icon="@mipmap/indicator_icon"
         android:label="飞行指示器"
-        android:icon="@mipmap/indicator_icon">
+        tools:ignore="GoogleAppIndexingWarning">
+        <!--<meta-data-->
+        <!--android:name="TencentMapSDK"-->
+        <!--android:value="6AABZ-ECH6I-MM7GH-5IGJP-GG52F-KHFGU" />-->
+
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="43b1a8deaeed048609c4250a468f6de4" />
+
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize">
             <!-- This keeps the window background of the activity showing
                  until Flutter renders its first frame. It can be removed if
@@ -29,9 +58,28 @@
                 android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
                 android:value="true" />
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".map.MapActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/LaunchTheme" />
+        <activity
+            android:name=".map.SelectLocationMapActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/LaunchTheme" />
+
+        <service
+            android:name=".MockService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="mock"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.zhishiqi.TELEPORT" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>

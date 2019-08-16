@@ -71,13 +71,13 @@ class DialogUtils {
         });
   }
 
-  static showPremissionDialog(BuildContext context) {
+  static showPremissionDialog(BuildContext context, listener) {
     showCupertinoDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text('提示'),
-            content: Text('请授予指示器获取位置权限和获取手机信息权限'),
+            content: Text('请允许指示器获取位置权限和获取手机信息权限'),
             actions: <Widget>[
               RaisedButton(
                 child: Text(
@@ -86,6 +86,9 @@ class DialogUtils {
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
+                  if (null != listener) {
+                    listener();
+                  }
                 },
               )
             ],

@@ -12,8 +12,8 @@ import '../config.dart';
 class LeitaiManager implements Callback {
   WebSocketCore socketCore;
   // 最大最小经纬度
-  MockLocation leftBottomLocation = startList[xiyouList.indexOf(selectedDemon)];
-  MockLocation rightTopLocation = endList[xiyouList.indexOf(selectedDemon)];
+  MockLocation leftBottomLocation = startList[locationList.indexOf(selectedLocation)];
+  MockLocation rightTopLocation = endList[locationList.indexOf(selectedLocation)];
 
   Function callback;
   Function initSuccess;
@@ -108,7 +108,7 @@ class LeitaiManager implements Callback {
     if (count == id) {
       callback(leitaiList, '扫描完成');
     } else {
-      callback(leitaiList, '已扫描$count次，共有$id块区域');
+      callback(leitaiList, '扫描进度 $count/$id');
     }
   }
 }

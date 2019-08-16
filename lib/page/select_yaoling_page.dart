@@ -18,6 +18,7 @@ class SelectYaolingState extends State<SelectYaolingPage> {
         title: Text('选择扫描妖灵'),
       ),
       body: SingleChildScrollView(
+        padding: EdgeInsets.only(left: 5, right: 5),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -26,6 +27,30 @@ class SelectYaolingState extends State<SelectYaolingPage> {
               spacing: 8.0,
               runSpacing: 1.0,
               children: _getYaolingWidgets(SpriteConfig.spriteMap),
+            ),
+            _buildTitle('星宿妖灵'),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 1.0,
+              children: _getYaolingWidgets(SpriteConfig.starMap),
+            ),
+            _buildTitle('元素妖灵'),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 1.0,
+              children: _getYaolingWidgets(SpriteConfig.elementMap),
+            ),
+            _buildTitle('人生赢家妖灵'),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 1.0,
+              children: _getYaolingWidgets(SpriteConfig.winnerMap),
+            ),
+            _buildTitle('鲲妖灵'),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 1.0,
+              children: _getYaolingWidgets(SpriteConfig.shipMap),
             ),
             _buildTitle('地域妖灵'),
             Wrap(
@@ -75,7 +100,7 @@ class SelectYaolingState extends State<SelectYaolingPage> {
           ),
           label: Text(
             yaoling.Name,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 13),
           ),
           onPressed: () {
             SpriteConfig.toggle(yaoling);
@@ -102,7 +127,7 @@ class SelectYaolingState extends State<SelectYaolingPage> {
       alignment: Alignment.center,
       child: Text(
         title,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
   }

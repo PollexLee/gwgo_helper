@@ -1,9 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:gwgo_helper/promise.dart';
+import 'package:gwgo_helper/utils/common_utils.dart';
+import 'package:gwgo_helper/utils/dialog_utils.dart';
 import 'package:gwgo_helper/yaoling.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'model/location.dart';
 
-final List<String> xiyouList = [
+final List<String> plainList = [
+  '自带飞行器',
+  '咬她的飞行器',
+  '小主播的飞行器',
+  '小莫哥的飞行器',
+];
+
+String IS_FIRST_START_KEY = 'isFirstStartKey';
+bool isFirstStart = true;
+saveFirstStart(bool b) async {
+  isFirstStart = b;
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.setBool(IS_FIRST_START_KEY, b);
+}
+
+final String plainKey = 'plainKey';
+String selectPlain = plainList[0];
+
+/// 保存选择的飞行器
+saveSelectPlain() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.setString(plainKey, selectPlain);
+}
+
+final List<String> locationList = [
   '我的周围',
   '北京',
   '西安',
@@ -11,10 +40,7 @@ final List<String> xiyouList = [
   '杭州',
   '沈阳',
   '广州',
-  '桂林城区',
-  '重庆',
-  '宿州',
-  '青岛',
+  '南京',
 ];
 
 /// 我的周围 距离
@@ -45,11 +71,12 @@ final List<MockLocation> startList = [
   MockLocation(30171250, 120047607), // 杭州
   MockLocation(41757996, 123303680), // 沈阳
   MockLocation(22997587, 113105621), // 广州
-  MockLocation(25213017, 110232697), // 桂林城区
-  MockLocation(29465905, 106425934), // 重庆
-  MockLocation(33537961, 116853333), // 宿州
-  // MockLocation(35865683, 120047607), // 青岛黄岛区
-  MockLocation(35882931, 120037308), // 青岛黄岛区
+  MockLocation(31907873, 118543854), // 南京
+  // MockLocation(25213017, 110232697), // 桂林城区
+  // MockLocation(29465905, 106425934), // 重庆
+  // MockLocation(33537961, 116853333), // 宿州
+  // // MockLocation(35865683, 120047607), // 青岛黄岛区
+  // MockLocation(35882931, 120037308), // 青岛黄岛区
 ];
 
 final List<MockLocation> endList = [
@@ -60,14 +87,35 @@ final List<MockLocation> endList = [
   MockLocation(30387092, 120250854),
   MockLocation(41913519, 123552246),
   MockLocation(23208534, 113363800),
-  MockLocation(25371328, 110331573),
-  MockLocation(29709525, 106641541),
-  MockLocation(33815666, 117066193),
-  // MockLocation(36107369, 120292053),
-  MockLocation(36465472, 120717773),
+  MockLocation(32349803, 118957214),
 ];
-// 选中的
-String selectedDemon = xiyouList[0];
+
+/// 是否起飞
+bool isFly = false;
+String isFlyKey = "isFlyKey";
+saveFlyStatus() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.setBool(isFlyKey, isFly);
+}
+
+/// 是否显示摇杆
+bool isShowRocker = false;
+String ROCKER_KEY = "ROCKER_KEY";
+saveRockerStatus() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.setBool(ROCKER_KEY, isShowRocker);
+}
+
+String lastLocationString = '';
+String LAST_LOCATION_KEY = 'LAST_LOCATION_KEY';
+setLocation(String locationStr) async {
+  lastLocationString = locationStr;
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.setString(LAST_LOCATION_KEY, lastLocationString);
+}
+
+// 选中的位置
+String selectedLocation = locationList[0];
 
 setStartAir(bool open) async {
   isStartAir = open;
@@ -96,11 +144,11 @@ saveYaolingRange() async {
 /// 保存选择扫描位置数据
 saveLocationRange() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
-  pref.setString(locationKey, selectedDemon);
+  pref.setString(locationKey, selectedLocation);
 }
 
 class Config {
-  static init() async {
+  static init(BuildContext context) async {
     // 初始化 多次飞行
     SharedPreferences pref = await SharedPreferences.getInstance();
     isOpenMultiFly = pref.getBool(openMultiFlyKey);
@@ -120,14 +168,48 @@ class Config {
       rangeSelect = '小';
     }
     // 初始化 已选择妖灵
-    selectedDemon = pref.getString(locationKey);
-    if (null == selectedDemon) {
-      selectedDemon = xiyouList[0];
+    selectedLocation = pref.getString(locationKey);
+    if (null == selectedLocation) {
+      selectedLocation = locationList[0];
     }
     // 初始化 自动启动游戏
     isStartAir = pref.getBool(startAirKey);
     if (null == isStartAir) {
       isStartAir = true;
+    }
+    // 初始化 选择
+    selectPlain = pref.getString(plainKey);
+    if (null == selectPlain) {
+      selectPlain = plainList[0];
+    }
+
+    lastLocationString = pref.getString(LAST_LOCATION_KEY);
+    if (null == lastLocationString) {
+      lastLocationString = "";
+    }
+
+    isFly = pref.getBool(isFlyKey);
+    if (null == isFly) {
+      isFly = false;
+    }
+    // isFly = isStart;
+
+    isShowRocker = pref.getBool(ROCKER_KEY);
+    if (null == isShowRocker) {
+      isShowRocker = false;
+    }
+
+    isFirstStart = pref.getBool(IS_FIRST_START_KEY);
+    if (null == isFirstStart) {
+      isFirstStart = true;
+    }
+
+    if (isFirstStart) {
+      saveFirstStart(false);
+      DialogUtils.showPremissionDialog(context, () {
+        PromiseInstance(context).init(context);
+        Navigator.pushNamed(context, '/help');
+      });
     }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gwgo_helper/manager/leitai_manager.dart';
+import 'package:gwgo_helper/manager/yaoling_info.dart';
 import 'package:gwgo_helper/model/leitai.dart';
+import 'package:gwgo_helper/utils/common_utils.dart';
 import 'package:gwgo_helper/widget/group_widget.dart';
 import 'package:gwgo_helper/widget/plarform_widget.dart';
 
@@ -37,6 +39,7 @@ class LeitaiState extends State<LeitaiPage> {
   final GlobalKey<ScaffoldState> key = GlobalKey();
   List<Leitai> leitaiList = List();
   LeitaiManager manager;
+  bool _isNotice = false;
 
   int _getLeitaiType(int index) {
     if (index == LeitaiPage.GROUP_INDEX) {
@@ -71,26 +74,58 @@ class LeitaiState extends State<LeitaiPage> {
         data.forEach((leitai) {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL &&
               leitai.isNormal()) {
+            // 扫描普通擂台
             if (widget.name == null || widget.name == '') {
-              leitaiList.add(leitai);
+              // 所有擂台
+              leitaiList.add(richLeitaiInfo(leitai));
             } else {
+              // 单人擂台
               if (leitai.winner_name.contains(widget.name)) {
-                leitaiList.add(leitai);
+                leitaiList.add(richLeitaiInfo(leitai));
               }
             }
           } else if (_getLeitaiType(widget.index) == LEITAI_TYPE_GROUP &&
               leitai.isGroup()) {
-            leitaiList.add(leitai);
+            // 御灵团战
+            leitaiList.add(richGroupInfo(leitai));
           }
         });
+      }
+
+      setState(() {
         // 排序
         if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
           leitaiList.sort((left, right) =>
-              left.getYaolingPower().compareTo(left.getYaolingPower()));
+              left.getYaolingPower().compareTo(right.getYaolingPower()));
         }
-      }
-      setState(() {});
+        // 只保留前100
+        if (leitaiList.length >= 100) {
+          if (!_isNotice) {
+            key.currentState.showSnackBar(SnackBar(
+              content: Text("擂台数量只保留前100"),
+            ));
+            _isNotice = true;
+          }
+          leitaiList = leitaiList.sublist(0, 100);
+        }
+      });
     });
+  }
+
+  /// 丰富妖灵信息 名称
+  Leitai richLeitaiInfo(Leitai leitai) {
+    leitai.sprite_list[0].name =
+        YaolingInfoManager.getYaolingName(leitai.sprite_list[0].spriteid);
+    leitai.sprite_list[1].name =
+        YaolingInfoManager.getYaolingName(leitai.sprite_list[1].spriteid);
+    leitai.sprite_list[2].name =
+        YaolingInfoManager.getYaolingName(leitai.sprite_list[2].spriteid);
+    return leitai;
+  }
+
+  Leitai richGroupInfo(Leitai leitai) {
+    leitai.bossname = YaolingInfoManager.getYaolingName(leitai.bossid);
+    return leitai;
   }
 
   @override
@@ -102,6 +137,18 @@ class LeitaiState extends State<LeitaiPage> {
           widget.title,
           style: TextStyle(fontSize: 14),
         ),
+        actions: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            child: IconButton(
+              icon: Icon(Icons.map),
+              onPressed: () {
+                // 跳转到地图，并绘制擂台
+                leitaiMap(leitaiList);
+              },
+            ),
+          )
+        ],
       ),
       body: _buildBody(),
     );

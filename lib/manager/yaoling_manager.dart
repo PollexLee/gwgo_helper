@@ -12,8 +12,8 @@ import '../yaoling.dart';
 class YaolingManager implements Callback {
   WebSocketCore socketCore;
 
-  MockLocation leftBottomLocation = startList[xiyouList.indexOf(selectedDemon)];
-  MockLocation rightTopLocation = endList[xiyouList.indexOf(selectedDemon)];
+  MockLocation leftBottomLocation = startList[locationList.indexOf(selectedLocation)];
+  MockLocation rightTopLocation = endList[locationList.indexOf(selectedLocation)];
 
   Function callback;
   Function initSuccess;

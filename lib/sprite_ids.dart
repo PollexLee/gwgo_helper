@@ -6,6 +6,18 @@ class SpriteConfig {
   /// 稀有妖灵
   static Map<int, String> spriteMap = Map();
 
+  /// 星宿妖灵
+  static Map<int, String> starMap = Map();
+
+  /// 元素妖灵
+  static Map<int, String> elementMap = Map();
+
+  /// 人生赢家妖灵
+  static Map<int, String> winnerMap = Map();
+
+  /// 鲲妖灵
+  static Map<int, String> shipMap = Map();
+
   /// 地域妖灵
   static Map<int, String> locationMap = Map();
 
@@ -20,27 +32,35 @@ class SpriteConfig {
   static final String cacheKey = 'selectedKey';
 
   static init() async {
-    spriteMap[2004037] = '全家兔子';
-    spriteMap[2000064] = '地藏';
-    spriteMap[2000106] = '风雪虎';
+    // spriteMap[2000275] = '画灵';
+    // spriteMap[2000224] = '雨收云';
+    spriteMap[2000327] = '小蝙蝠';
     spriteMap[2000317] = '金角小妖';
     spriteMap[2000313] = '银角小妖';
-    spriteMap[2000327] = '小蝙蝠';
+    spriteMap[2004037] = '全家兔子';
+    spriteMap[2000106] = '风雪虎';
+    // spriteMap[2000019] = '金灵';
+    // spriteMap[2000031] = '银灵';
+    // spriteMap[2000410] = '风舞獐';
+    spriteMap[2000268] = '白秋练';
     spriteMap[2000265] = '香玉';
     spriteMap[2000238] = '颜如玉';
+    spriteMap[2000200] = '老鼠';
+    spriteMap[2000221] = '花无邪';
+    spriteMap[2000215] = '小虫子';
+    spriteMap[2000197] = '莫邪';
+    spriteMap[2000109] = '螺莉莉';
+    spriteMap[2000197] = '小安康';
+    spriteMap[2000247] = '小狐狸';
+    spriteMap[2000001] = '干将';
+    spriteMap[2000167] = '莫邪';
+    spriteMap[2000037] = '火龟';
+    spriteMap[2000013] = '跳跳鹿';
     spriteMap[2000147] = '檐上喵';
     spriteMap[2000188] = 'coco熊';
-    spriteMap[2000019] = '金灵';
-    spriteMap[2000031] = '银灵';
-    spriteMap[2000410] = '风舞獐';
-    spriteMap[2000268] = '白秋练';
-    spriteMap[2000404] = '许愿星';
-    spriteMap[2000419] = '羊';
+    spriteMap[2000064] = '地藏';
+    spriteMap[2000176] = '木头人';
     spriteMap[2000078] = '布鲁';
-
-    spriteMap[2000518] = '企鹅';
-    spriteMap[2004016] = '素包';
-    spriteMap[2000109] = '螺莉莉';
     spriteMap[2000028] = '小蝌蚪';
     spriteMap[2000241] = '猫头鹰';
     spriteMap[2000007] = '树树鼠';
@@ -49,24 +69,43 @@ class SpriteConfig {
     spriteMap[2000203] = '丹炉';
     spriteMap[2000271] = '虚灵灵';
     spriteMap[2000272] = '抱抱扑';
-    spriteMap[2000513] = '水元宝宝';
-    spriteMap[2000197] = '小安康';
-    spriteMap[2000247] = '小狐狸';
     spriteMap[2000156] = '小猪仔';
     spriteMap[2000075] = '犀牛';
     spriteMap[2000173] = '螃蟹';
     spriteMap[2004019] = '蟹斗眼';
-    spriteMap[2000416] = '围巾蛇';
-    // spriteMap[2000406] = '不认识';
-    spriteMap[2000422] = '不认识';
-    spriteMap[2000401] = '井';
-    spriteMap[2000402] = '鬼';
-    spriteMap[2000403] = '极';
+    spriteMap[2000518] = '企鹅';
+    spriteMap[2004016] = '素包';
+
+    starMap[2000404] = '许愿星';
+    starMap[2000401] = '井';
+    starMap[2000402] = '鬼';
+    starMap[2000403] = '极';
+    starMap[2000433] = '呆呆貐';
+    starMap[2000436] = '幼角獬';
+    starMap[2000422] = '小米兔';
+    starMap[2000416] = '围巾蛇';
+    starMap[2000419] = '火花羊';
+    starMap[2000413] = '棉袄狼';
+
+    elementMap[2000511] = '金元宝宝';
+    elementMap[2000512] = '木元宝宝';
+    elementMap[2000513] = '水元宝宝';
+    elementMap[2000514] = '火元宝宝';
+    elementMap[2000515] = '土元宝宝';
+
+    winnerMap[2000506] = '杠精';
+    winnerMap[2000507] = '求生欲';
+    winnerMap[2000508] = '背锅';
+    winnerMap[2000509] = '佛系妖';
+
+    shipMap[2000501] = '咸鱼';
+    shipMap[2000502] = '多鱼';
+    shipMap[2000504] = '摸鱼';
+    shipMap[2000519] = '大弱智鱼';
 
     nestMap[2000112] = '雷童子';
     nestMap[2000321] = '木偶娃娃';
     nestMap[2000324] = '瓷偶娃娃';
-    nestMap[2000413] = '棉袄狼';
 
     locationMap[2000182] = '小兵俑';
     locationMap[2000206] = '麻辣小火锅';
