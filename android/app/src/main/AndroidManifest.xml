@@ -63,13 +63,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".map.MapActivity"
+            android:name=".map.LeitaiMapActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LaunchTheme" />
         <activity
             android:name=".map.SelectLocationMapActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LaunchTheme" />
+        <activity android:name=".map.SelectAreaMapActivity" />
 
         <service
             android:name=".MockService"

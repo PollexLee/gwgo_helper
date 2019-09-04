@@ -4,16 +4,11 @@ import 'dart:convert';
 import 'package:gwgo_helper/core/socket_core.dart';
 import 'package:gwgo_helper/core/websocket_callback.dart';
 import 'package:gwgo_helper/model/leitai.dart';
-import 'package:gwgo_helper/model/location.dart';
-import 'package:gwgo_helper/utils/common_utils.dart';
 
-import '../config.dart';
+import 'location_manager.dart';
 
 class LeitaiManager implements Callback {
   WebSocketCore socketCore;
-  // 最大最小经纬度
-  MockLocation leftBottomLocation = startList[locationList.indexOf(selectedLocation)];
-  MockLocation rightTopLocation = endList[locationList.indexOf(selectedLocation)];
 
   Function callback;
   Function initSuccess;
@@ -22,6 +17,9 @@ class LeitaiManager implements Callback {
 
   int id = 0;
   int count = 0;
+
+  int maxLong = 0;
+  int maxLati = 0;
 
   init(Function initSuccess) {
     this.initSuccess = initSuccess;
@@ -32,19 +30,16 @@ class LeitaiManager implements Callback {
 
   /// 刷新擂台
   refreshLeitai(Function callback) async {
-    id = 1;
+    id = 0;
     this.callback = callback;
 
-    // 左下经纬度是0，说明是我的周围，根据当前位置来计算扫描经纬度
-    if (leftBottomLocation.latitude == 0) {
-      Location location = await getDeviceLocation();
-      leftBottomLocation = MockLocation.fromLocation(location);
-      rightTopLocation.latitude = leftBottomLocation.latitude + leitai_distance;
-      rightTopLocation.longitude =
-          leftBottomLocation.longitude + leitai_distance;
-      leftBottomLocation.latitude -= leitai_distance;
-      leftBottomLocation.longitude -= leitai_distance;
+    var area = await LocationManager.getLeitaiScanningArea();
+
+    if (null == area) {
+      return;
     }
+    var leftBottomLocation = area[0];
+    var rightTopLocation = area[1];
 
     var currentLat = leftBottomLocation.latitude;
     var currentLon = leftBottomLocation.longitude;
@@ -97,13 +92,39 @@ class LeitaiManager implements Callback {
     if (tempList == null || tempList.isEmpty) {
       tempList = List();
     }
+    int minLon = 36000000000;
+    int minLat = 36000000000;
+    int maxLon = 0;
+    int maxLat = 0;
+
     tempList.forEach((sprite) {
       Map<String, dynamic> spriteMap = sprite;
       Leitai leitai = Leitai.fromJson(spriteMap);
       if (leitai.latitude != 0 && leitai.longtitude != 0) {
         leitaiList.add(leitai);
+        if (leitai.longtitude < minLon) {
+          minLon = leitai.longtitude;
+        }
+        if (leitai.longtitude > maxLon) {
+          maxLon = leitai.longtitude;
+        }
+        if (leitai.latitude < minLat) {
+          minLat = leitai.latitude;
+        }
+        if (leitai.latitude > maxLat) {
+          maxLat = leitai.latitude;
+        }
       }
     });
+
+    if ((maxLat - minLat) > maxLati) {
+      maxLati = maxLat - minLat;
+    }
+    if ((maxLon - minLon) > maxLong) {
+      maxLong = maxLon - minLon;
+    }
+    print('本次间隔距离：maxLong = $maxLong, maxLati = $maxLati.');
+
     print('扫描到擂台${leitaiList.length}个');
     if (count == id) {
       callback(leitaiList, '扫描完成');

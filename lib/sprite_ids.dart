@@ -18,6 +18,9 @@ class SpriteConfig {
   /// 鲲妖灵
   static Map<int, String> shipMap = Map();
 
+    /// 全员恶人
+  static Map<int, String> erenMap = Map();
+
   /// 地域妖灵
   static Map<int, String> locationMap = Map();
 
@@ -34,11 +37,15 @@ class SpriteConfig {
   static init() async {
     // spriteMap[2000275] = '画灵';
     // spriteMap[2000224] = '雨收云';
+    spriteMap[2000126]= '小龙人';
+    spriteMap[2000132]= '小葫芦';
+    spriteMap[2000144]= '蛇灵儿';
     spriteMap[2000327] = '小蝙蝠';
     spriteMap[2000317] = '金角小妖';
     spriteMap[2000313] = '银角小妖';
     spriteMap[2004037] = '全家兔子';
     spriteMap[2000106] = '风雪虎';
+    spriteMap[2000046] = '大象';
     // spriteMap[2000019] = '金灵';
     // spriteMap[2000031] = '银灵';
     // spriteMap[2000410] = '风舞獐';
@@ -103,6 +110,11 @@ class SpriteConfig {
     shipMap[2000504] = '摸鱼';
     shipMap[2000519] = '大弱智鱼';
 
+    erenMap[2004043] = '真香';
+    erenMap[2004040] = '柠檬精';
+    erenMap[2004042] = '鸽了';
+    erenMap[2004041] = '复读鸡';
+
     nestMap[2000112] = '雷童子';
     nestMap[2000321] = '木偶娃娃';
     nestMap[2000324] = '瓷偶娃娃';
@@ -117,10 +129,11 @@ class SpriteConfig {
     selectedMap.clear();
     SharedPreferences pref = await SharedPreferences.getInstance();
     List<String> idList = pref.getStringList(cacheKey);
+
     if (null == idList || idList.isEmpty) {
-      selectedMap.addAll(spriteMap);
-      selectedMap.addAll(locationMap);
-      selectedMap.addAll(nestMap);
+      // 默认选中银角、风雪虎
+      selectedMap[2000313] = spriteMap[2000313];
+      selectedMap[2000106] = spriteMap[2000106];
     } else {
       idList.forEach((id) {
         selectedMap[int.parse(id)] = _getName(int.parse(id));
@@ -136,7 +149,7 @@ class SpriteConfig {
     } else if (nestMap.containsKey(id)) {
       return nestMap[id];
     } else {
-      return '未知';
+      return id.toString();
     }
   }
 

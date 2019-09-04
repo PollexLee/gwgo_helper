@@ -1,7 +1,6 @@
 package com.example.gwgo_helper.map
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -18,23 +17,23 @@ import com.google.gson.reflect.TypeToken
 import java.util.ArrayList
 
 
-class MapActivity : AppCompatActivity() {
+class LeitaiMapActivity : AppCompatActivity() {
 
     companion object {
 
         fun start(context: Activity, json: String) {
-            val intent = Intent(context, MapActivity::class.java)
+            val intent = Intent(context, LeitaiMapActivity::class.java)
             intent.putExtra("json", json)
             context.startActivity(intent)
         }
     }
 
-    lateinit var binding: com.example.gwgo_helper.databinding.ActivityMapBinding
+    lateinit var binding: com.example.gwgo_helper.databinding.ActivityMapLeitaiBinding
     lateinit var aMap: AMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_map)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_map_leitai)
 
 
         binding.map.onCreate(savedInstanceState)

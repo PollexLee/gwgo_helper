@@ -88,10 +88,10 @@ class JuanzhuState extends State<JuanzhuPage> {
   }
 
   void openWeChatQR() {
-    launch('https://i.loli.net/2019/05/26/5cea72c27ebc891912.png');
+    launch('https://i.loli.net/2019/08/19/savTWZCy9mljeAd.png');
   }
 
   void openAliPayQR() {
-    launch('https://i.loli.net/2019/05/26/5cea72c27fcb988977.png');
+    launch('https://i.loli.net/2019/08/19/YZWCtfVeDz7qsad.jpg');
   }
 }

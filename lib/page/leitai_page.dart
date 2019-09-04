@@ -65,11 +65,6 @@ class LeitaiState extends State<LeitaiPage> {
 
   void _refreshLeitai() {
     manager.refreshLeitai((List<Leitai> data, String process) {
-      if (widget.name == null || widget.name == '') {
-        widget.title = '$process';
-      } else {
-        widget.title = '${widget.name} - $process';
-      }
       if (data.isNotEmpty) {
         data.forEach((leitai) {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL &&
@@ -77,17 +72,23 @@ class LeitaiState extends State<LeitaiPage> {
             // 扫描普通擂台
             if (widget.name == null || widget.name == '') {
               // 所有擂台
-              leitaiList.add(richLeitaiInfo(leitai));
+              if (!leitaiList.contains(leitai)) {
+                leitaiList.add(richLeitaiInfo(leitai));
+              }
             } else {
               // 单人擂台
               if (leitai.winner_name.contains(widget.name)) {
-                leitaiList.add(richLeitaiInfo(leitai));
+                if (!leitaiList.contains(leitai)) {
+                  leitaiList.add(richLeitaiInfo(leitai));
+                }
               }
             }
           } else if (_getLeitaiType(widget.index) == LEITAI_TYPE_GROUP &&
               leitai.isGroup()) {
             // 御灵团战
-            leitaiList.add(richGroupInfo(leitai));
+            if (!leitaiList.contains(leitai)) {
+              leitaiList.add(richLeitaiInfo(leitai));
+            }
           }
         });
       }
@@ -107,6 +108,12 @@ class LeitaiState extends State<LeitaiPage> {
             _isNotice = true;
           }
           leitaiList = leitaiList.sublist(0, 100);
+        }
+
+        if (widget.name == null || widget.name == '') {
+          widget.title = '$process';
+        } else {
+          widget.title = '${widget.name} - $process - ${leitaiList.length}';
         }
       });
     });

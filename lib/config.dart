@@ -34,6 +34,7 @@ saveSelectPlain() async {
 
 final List<String> locationList = [
   '我的周围',
+  '自定义区域',
   '北京',
   '西安',
   '成都',
@@ -46,7 +47,7 @@ final List<String> locationList = [
 /// 我的周围 距离
 final int distance = 40000;
 final int stemp = 20000;
-final int leitai_distance = 140000;
+final int leitai_distance = 400000;
 
 final String yaolingRangeKey = 'YaolingRangeKey';
 String rangeSelect = '小';
@@ -65,6 +66,7 @@ bool isStartAir = true;
 final String locationKey = 'LocationKey';
 final List<MockLocation> startList = [
   MockLocation(0, 0), // 我的周围
+  MockLocation(-1, -1), // 自定义区域
   MockLocation(39700847, 116109009), // 北京
   MockLocation(34198173, 108816833), // 西安
   MockLocation(30548070, 103930664), // 成都
@@ -81,6 +83,7 @@ final List<MockLocation> startList = [
 
 final List<MockLocation> endList = [
   MockLocation(0, 0), // 我的周围
+  MockLocation(-1, -1), // 自定义区域
   MockLocation(40199855, 116685791),
   MockLocation(34380846, 109092865),
   MockLocation(30773699, 104186096),

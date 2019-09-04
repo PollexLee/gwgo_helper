@@ -8,13 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.amap.api.maps.AMap
 import com.amap.api.maps.AMapOptions
-import com.amap.api.maps.CameraUpdate
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.MarkerOptions
 import com.amap.api.maps.model.MyLocationStyle
 import com.example.gwgo_helper.R
-import com.example.gwgo_helper.databinding.ActivityMapBinding
 import com.example.gwgo_helper.databinding.ActivityMapSelectLocationBinding
 import com.google.gson.Gson
 
@@ -88,7 +86,6 @@ class SelectLocationMapActivity : AppCompatActivity() {
         uiSettings.isMyLocationButtonEnabled = true
         uiSettings.isScaleControlsEnabled = true
         uiSettings.logoPosition = AMapOptions.LOGO_POSITION_BOTTOM_RIGHT
-
     }
 
     private fun showLocationMarker(latLng: LatLng) {

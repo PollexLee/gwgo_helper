@@ -7,6 +7,8 @@ import 'package:gwgo_helper/model/leitai.dart';
 import 'dart:math';
 import 'package:gwgo_helper/model/location.dart';
 import '../config.dart';
+import 'package:crypto/crypto.dart' as crypto;
+import 'package:convert/convert.dart';
 
 //获取到插件与原生的交互通道
 const jumpPlugin = const MethodChannel('com.pollex.gwgo/plugin');
@@ -177,4 +179,12 @@ dynamic leitaiMap(List<Leitai> leitaiList) async {
 
 dynamic mackLocation() async {
   await jumpPlugin.invokeMethod('mockLocation');
+}
+
+
+String generateMd5(String data) {
+  var content = new Utf8Encoder().convert(data);
+  var md5 = crypto.md5;
+  var digest = md5.convert(content);
+  return hex.encode(digest.bytes);
 }

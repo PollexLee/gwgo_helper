@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,7 +20,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.gwgo_helper.map.MapActivity;
+import com.example.gwgo_helper.map.LeitaiMapActivity;
 import com.example.gwgo_helper.map.SelectLocationMapActivity;
 
 import java.util.ArrayList;
@@ -243,7 +242,7 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
         } else if (methodCall.method.equals("leitaiMap")) {
             String json = (String) methodCall.arguments;
             Log.d("pollex", "json = " + json);
-            MapActivity.Companion.start(activity, json);
+            LeitaiMapActivity.Companion.start(activity, json);
             result.success("ok");
         } else if (methodCall.method.equals("mockLocation")) {
 //            String json = (String) methodCall.arguments;

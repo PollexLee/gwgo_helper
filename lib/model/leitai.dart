@@ -1,6 +1,3 @@
-import 'dart:collection';
-import 'dart:convert' show JSON;
-
 /// 擂台数据结构
 class Leitai {
   /**
@@ -38,6 +35,9 @@ class Leitai {
       this.sprite_list,
       this.winner_name,
       this.winner_fightpower});
+
+  bool operator ==(other) =>
+      (other.latitude == latitude && other.longtitude == longtitude);
 
   factory Leitai.fromJson(Map<String, dynamic> json) {
     int state = json['state'];
@@ -114,6 +114,20 @@ class Leitai {
     map['winner_fightpower'] = winner_fightpower;
     return map;
   }
+
+  @override
+  int get hashCode {
+    return (latitude.toString() + longtitude.toString()).hashCode;
+  }
+
+  bool equals(dynamic leitai) {
+    if (null != leitai && leitai is Leitai) {
+      if (latitude == leitai.latitude && longtitude == leitai.longtitude) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 class Sprite {
@@ -132,7 +146,7 @@ class Sprite {
     );
   }
 
-  Map toJson(){
+  Map toJson() {
     Map map = Map();
     map['level'] = level;
     map['fightpower'] = fightpower;

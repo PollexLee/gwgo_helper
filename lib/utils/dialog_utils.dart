@@ -105,6 +105,7 @@ class DialogUtils {
             content: Text(content),
             actions: <Widget>[
               RaisedButton(
+                color: Colors.blueAccent,
                 child: Text(
                   '知道了',
                   style: TextStyle(color: Colors.white),

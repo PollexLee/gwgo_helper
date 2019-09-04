@@ -4,25 +4,28 @@ import 'dart:convert';
 import 'package:gwgo_helper/core/socket_core.dart';
 import 'package:gwgo_helper/core/websocket_callback.dart';
 import 'package:gwgo_helper/model/location.dart';
-import 'package:gwgo_helper/utils/common_utils.dart';
 import '../sprite_ids.dart';
 import '../config.dart';
 import '../yaoling.dart';
+import 'location_manager.dart';
+import 'yaoling_info.dart';
 
 class YaolingManager implements Callback {
   WebSocketCore socketCore;
 
-  MockLocation leftBottomLocation = startList[locationList.indexOf(selectedLocation)];
-  MockLocation rightTopLocation = endList[locationList.indexOf(selectedLocation)];
+  MockLocation leftBottomLocation =
+      startList[locationList.indexOf(selectedLocation)];
+  MockLocation rightTopLocation =
+      endList[locationList.indexOf(selectedLocation)];
 
   Function callback;
   Function initSuccess;
 
   int lastRequestId;
 
-  int id = 1;
+  int id = 0;
 
-  int requestCount = 1;
+  int requestCount = 0;
 
   init(Function initSuccess) {
     this.initSuccess = initSuccess;
@@ -34,39 +37,18 @@ class YaolingManager implements Callback {
   /// 刷新妖灵
   refreshYaoling(Function callback) async {
     print('开始扫描');
-    this.id = 1;
-    this.requestCount = 1;
+    this.id = 0;
+    this.requestCount = 0;
     this.callback = callback;
-    // 左下经纬度是0，说明是我的周围，根据当前位置来计算扫描经纬度
-    if (leftBottomLocation.latitude == 0) {
-      print('获取要扫描的位置');
-      callback(null, '正在获取定位');
-      // 获取当前位置
-      Location location = await getDeviceLocation();
-      leftBottomLocation = MockLocation.fromLocation(location);
-      int allDistance = distance;
-      switch (rangeSelect) {
-        case '极小':
-          allDistance = distance ~/ 4;
-          break;
-        case '小':
-          allDistance = distance;
-          break;
-        case '中':
-          allDistance = distance + stemp;
-          break;
-        case '大':
-          allDistance = distance + 2 * stemp;
-          break;
-      }
 
-      rightTopLocation.latitude = leftBottomLocation.latitude + allDistance;
-      rightTopLocation.longitude = leftBottomLocation.longitude + allDistance;
-      leftBottomLocation.latitude -= allDistance;
-      leftBottomLocation.longitude -= allDistance;
-      print('获取到位置');
-      callback(null, '扫描中');
+    List<MockLocation> area =
+        await LocationManager.getYaolingScanningArea(callback);
+    if (null == area) {
+      return;
     }
+    leftBottomLocation = area[0];
+    rightTopLocation = area[1];
+
     var currentLat = leftBottomLocation.latitude;
     var currentLon = leftBottomLocation.longitude;
 
@@ -135,13 +117,21 @@ class YaolingManager implements Callback {
       Map<String, dynamic> spriteMap = sprite;
       Yaoling yaoling = Yaoling.fromjson(spriteMap);
       // 筛选出稀有
+      // 是否包含在选中类表
       if (SpriteConfig.selectedMap.keys.contains(yaoling.sprite_id)) {
         yaoling.name = SpriteConfig.selectedMap[yaoling.sprite_id];
         yaolingList.add(yaoling);
       }
+      // else if (!YaolingInfoManager.yaolingMap.keys
+      //     .contains(yaoling.sprite_id)) {
+      //   // 是否包含在配置列表中
+      //   if (yaoling.sprite_id != 2004041) {
+      //     yaoling.name = yaoling.sprite_id.toString();
+      //     yaolingList.add(yaoling);
+      //   }
+      // }
     });
-    // print('扫描到稀有妖灵${yaolingList.length}只');
-    // if (yaolingList.isNotEmpty) {
+
     if (null != callback) {
       if (requestCount == id) {
         callback(yaolingList, '扫描完成');

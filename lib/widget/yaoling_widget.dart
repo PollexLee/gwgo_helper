@@ -35,6 +35,40 @@ class YaolingState extends State<YaolingWidget> {
   @override
   Widget build(BuildContext context) {
     prefix0.Yaoling yaolingInfo = YaolingInfoManager.yaolingMap[widget.yaoling.sprite_id];
+    if(null == yaolingInfo){
+          return ActionChip(
+      elevation: 3.0,
+      backgroundColor: _buildYaolingBackgroundColor(widget.yaoling),
+      avatar: CircleAvatar(
+        backgroundColor: Colors.white,
+        child: Text('无'),
+      ),
+      label: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: 50,
+            alignment: Alignment.topLeft,
+            child: Text(widget.yaoling.name,
+              style: TextStyle(fontSize: 10),
+            ),
+          ),
+          Container(
+            alignment: Alignment.topLeft,
+            width: 50,
+            child: _buildTime(widget.yaoling.dismisstime),
+          ),
+        ],
+      ),
+      onPressed: () {
+        setState(() {
+          widget.yaoling.isClick = true;
+        });
+        widget.onTap();
+      },
+    );
+    }
+
     return ActionChip(
       elevation: 3.0,
       backgroundColor: _buildYaolingBackgroundColor(widget.yaoling),

@@ -21,11 +21,11 @@ class Yaoling {
   String PrefabName;
   String ImgName;
   String BigImgPath;
-  String SmallImgPath;
+  String SmallImgPath = '';
   int Level;
 
   Yaoling({this.Id, this.Name, this.FiveEle, this.PrefabName, this.ImgName,
-      this.BigImgPath, this.SmallImgPath, level});
+      this.BigImgPath, this.SmallImgPath, this.Level});
 
   factory Yaoling.fromJson(Map<String, dynamic> json){
     var FiveEle = List<String>();
@@ -41,7 +41,7 @@ class Yaoling {
     ImgName: json['ImgName'],
     BigImgPath: json['BigImgPath'],
     SmallImgPath: json['SmallImgPath'],
-    level: json['level'],
+    Level: json['Level'],
     );
   }
 

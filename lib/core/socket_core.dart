@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:convert' as prefix0;
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -253,9 +254,9 @@ class GwgoSocketWrap {
         print('未知的字符串$data');
       }
     } else {
-      if (_timer != null) {
-        _timer.cancel();
-      }
+      // if (_timer != null) {
+      //   _timer.cancel();
+      // }
 
       if (_request == null) {
         return;
@@ -263,18 +264,47 @@ class GwgoSocketWrap {
 
       // 调用对应请求的callback
       Uint8List list = data;
-      Utf8Decoder decoder = Utf8Decoder();
-      String result = decoder.convert(list.sublist(4));
+      Utf8Decoder decoder = Utf8Decoder(allowMalformed: true);
+      String result = '';
+      try {
+        result = decoder.convert(list.sublist(4));
+      } catch (exception) {
+        print(exception);
+      }
 
       /// 替换掉不显示的���殊字符
-      result = result.replaceAll(String.fromCharCode(0x08), '');
-      result = result.replaceAll(String.fromCharCode(0x07), '');
-      result = result.replaceAll(String.fromCharCode(0x7f), '');
+      result = result.replaceAll(String.fromCharCode(0x01), ' ');
+      result = result.replaceAll(String.fromCharCode(0x02), ' ');
+      result = result.replaceAll(String.fromCharCode(0x03), ' ');
+      result = result.replaceAll(String.fromCharCode(0x04), ' ');
+      result = result.replaceAll(String.fromCharCode(0x05), ' ');
+      result = result.replaceAll(String.fromCharCode(0x06), ' ');
+      result = result.replaceAll(String.fromCharCode(0x07), ' ');
+      result = result.replaceAll(String.fromCharCode(0x08), ' ');
+      result = result.replaceAll(String.fromCharCode(0x09), ' ');
+      result = result.replaceAll(String.fromCharCode(0x10), ' ');
+      result = result.replaceAll(String.fromCharCode(0x11), ' ');
+      result = result.replaceAll(String.fromCharCode(0x12), ' ');
+      result = result.replaceAll(String.fromCharCode(0x13), ' ');
+      result = result.replaceAll(String.fromCharCode(0x14), ' ');
+      result = result.replaceAll(String.fromCharCode(0x0a), ' ');
+      result = result.replaceAll(String.fromCharCode(0x0b), ' ');
+      result = result.replaceAll(String.fromCharCode(0x0c), ' ');
+      result = result.replaceAll(String.fromCharCode(0x0d), ' ');
+      result = result.replaceAll(String.fromCharCode(0x0e), ' ');
+      result = result.replaceAll(String.fromCharCode(0x0f), ' ');
+      result = result.replaceAll(String.fromCharCode(0x7f), ' ');
       print('返回数据：$result');
+
       JsonCodec jsonCodec = JsonCodec();
       Map<String, dynamic> resultMap = Map();
       try {
+        if (result.contains('filename')) {
+          // 是文件配置信息，就替换掉空格
+          result = result.trim().replaceAll(' ', '"');
+        }
         resultMap = jsonCodec.decode(result);
+        // }
       } catch (exc) {
         print(exc.toString());
         print(list);
@@ -283,6 +313,9 @@ class GwgoSocketWrap {
       if (id != _request.id) {
         print('id匹配失败，id = $id, requestId = ${_request.id}');
         return;
+      }
+      if (_timer != null) {
+        _timer.cancel();
       }
       print('id匹配成功，id = $id');
 

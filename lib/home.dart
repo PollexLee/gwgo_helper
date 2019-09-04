@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gwgo_helper/page/home/left_drawer_widget.dart';
@@ -7,7 +6,12 @@ import 'promise.dart';
 import 'config.dart';
 import 'utils/common_utils.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
   BuildContext context;
   List<String> titleList = [
     '妖灵扫描',
@@ -25,6 +29,9 @@ class HomePage extends StatelessWidget {
     '寻仇利器！扫描选定区域，玩家呢称包含特定字符的擂台',
     '过期了？购买指示器使用时长',
   ];
+
+  TextEditingController nameController = new TextEditingController();
+  var _searchName = "";
 
   @override
   Widget build(BuildContext context) {
@@ -125,8 +132,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  TextEditingController nameController = new TextEditingController();
-
   _onTap(int index) async {
     switch (index) {
       case 0:
@@ -161,37 +166,50 @@ class HomePage extends StatelessWidget {
           showCupertinoDialog(
               context: context,
               builder: (context) {
-                return AlertDialog(
-                  title: Text('输入要搜索人的呢称'),
-                  content: Container(
-                    child: TextField(
-                      controller: nameController,
-                    ),
-                  ),
-                  actions: <Widget>[
-                    RaisedButton(
-                      child: Text(
-                        '取消',
-                        style: TextStyle(color: Colors.white),
+                return StatefulBuilder(
+                  builder: (context, state) {
+                    return AlertDialog(
+                      title: Text('输入要搜索人的呢称'),
+                      content: Container(
+                        child: TextField(
+                          controller: nameController,
+                          onChanged: (String value) {
+                            state(() {
+                              _searchName = nameController.text;
+                            });
+                          },
+                        ),
                       ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        print('点击了取消');
-                      },
-                      color: Colors.grey,
-                    ),
-                    RaisedButton(
-                      child: Text(
-                        '确认',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        print('点击了确认');
-                        _openSingleLeitaiPage(nameController.text);
-                      },
-                    )
-                  ],
+                      actions: <Widget>[
+                        RaisedButton(
+                          child: Text(
+                            '取消',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            print('点击了取消');
+                          },
+                          color: Colors.grey,
+                        ),
+                        RaisedButton(
+                          color: Colors.blueAccent,
+                          child: Text(
+                            '确认',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: (null == _searchName ||
+                                  _searchName.isEmpty)
+                              ? null
+                              : () {
+                                  Navigator.of(context).pop();
+                                  print('点击了确认');
+                                  _openSingleLeitaiPage(nameController.text);
+                                },
+                        )
+                      ],
+                    );
+                  },
                 );
               });
         }
