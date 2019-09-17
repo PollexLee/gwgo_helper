@@ -21,6 +21,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.gwgo_helper.map.LeitaiMapActivity;
+import com.example.gwgo_helper.map.SelectAreaMapActivity;
 import com.example.gwgo_helper.map.SelectLocationMapActivity;
 
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
      */
     private final int REQUEST_CODE_LOCATION = 0x002;
     private final int REQUEST_CODE_PERMISSION = 0x001;
+    private final int REQUEST_CODE_SELECT_AREA = 0x003;
+
 
     private MockService mockService;
     private boolean isReceive = false;
@@ -80,6 +83,9 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
                 case REQUEST_CODE_PERMISSION:
                     processDeviceId(resultTemp, false);
                     break;
+                case REQUEST_CODE_SELECT_AREA:
+                    String result = data.getStringExtra(SelectAreaMapActivity.RESULT_KEY);
+                    channel.invokeMethod("setArea", result);
                 default:
                     break;
 
@@ -162,7 +168,7 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
 //            Criteria criteria = new Criteria();
 //            criteria.setAccuracy(Criteria.ACCURACY_FINE);
 //            criteria.setSpeedRequired(true);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1000,locationListener, Looper.myLooper());
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1000, locationListener, Looper.myLooper());
             this.result = result;
         } else if (methodCall.method.equals("getImei")) {
 
@@ -248,6 +254,10 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
 //            String json = (String) methodCall.arguments;
 //            Log.d("pollex", "json = " + json);
             SelectLocationMapActivity.Companion.start(activity, REQUEST_CODE_LOCATION);
+            result.success("ok");
+        } else if (methodCall.method.equals("openSelectAreaPage")) {
+            // 选择扫描区域
+            SelectAreaMapActivity.Companion.start(activity, REQUEST_CODE_SELECT_AREA);
             result.success("ok");
         }
     }

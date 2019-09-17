@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -273,6 +274,16 @@ class DrawerState extends State<DrawerLayout> {
             selectedLocation = value;
           });
           saveLocationRange();
+          if (value == '自定义区域') {
+            setSelectArea((String data) {
+              if (null == data || data.isEmpty) {
+                toast('没有选择有效的自定义区域');
+                return;
+              }
+              saveSelectArea(data);
+              parseArea(data);
+            });
+          }
         },
         title: Text(name),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gwgo_helper/utils/common_utils.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DialogUtils {
   static ProgressDialog _progressDialog;
@@ -140,5 +141,34 @@ class DialogUtils {
     if (null != _progressDialog && _progressDialog.isShowing()) {
       _progressDialog.hide();
     }
+  }
+
+    static showUpdateDialog(BuildContext context, String version, String msg, bool isForce) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return WillPopScope(
+            onWillPop: ()async{
+              return Future.value(false);
+            },
+            child: AlertDialog(
+            title: Text('$version版本更新'),
+            content: Text('更新内容：\n$msg'),
+            actions: <Widget>[
+              RaisedButton(
+                color: Colors.blue,
+                child: Text(
+                  '去下载',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  launch('https://www.pgyer.com/gwgo');
+                },
+              )
+            ],
+          ),
+          );
+        });
   }
 }

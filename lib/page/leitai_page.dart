@@ -20,10 +20,11 @@ class LeitaiPage extends StatefulWidget {
   /// 擂台
   static int LEITAI_INDEX = 2;
   String name = '';
+  String power = '';
 
   String title = '擂台扫描';
 
-  LeitaiPage(this.index, {this.name});
+  LeitaiPage(this.index, {this.name, this.power});
 
   @override
   State<StatefulWidget> createState() {
@@ -70,16 +71,35 @@ class LeitaiState extends State<LeitaiPage> {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL &&
               leitai.isNormal()) {
             // 扫描普通擂台
-            if (widget.name == null || widget.name == '') {
+            if ((widget.name == null || widget.name.isEmpty) &&
+                (widget.power == null || widget.power.isEmpty)) {
               // 所有擂台
               if (!leitaiList.contains(leitai)) {
                 leitaiList.add(richLeitaiInfo(leitai));
               }
             } else {
               // 单人擂台
-              if (leitai.winner_name.contains(widget.name)) {
-                if (!leitaiList.contains(leitai)) {
-                  leitaiList.add(richLeitaiInfo(leitai));
+              if (null != widget.name && widget.name.isNotEmpty) {
+                // 判断昵称是否包含
+                if (leitai.winner_name.contains(widget.name)) {
+                  // 判断战力是否包含
+                  if (null == widget.power ||
+                      widget.power == '' ||
+                      leitai.winner_fightpower.toString() == widget.power) {
+                    if (!leitaiList.contains(leitai)) {
+                      leitaiList.add(richLeitaiInfo(leitai));
+                    }
+                  }
+                }
+              } else {
+                // 没有设置昵称
+                // 判断战力是否包含
+                if (null == widget.power ||
+                    widget.power == '' ||
+                    leitai.winner_fightpower.toString() == widget.power) {
+                  if (!leitaiList.contains(leitai)) {
+                    leitaiList.add(richLeitaiInfo(leitai));
+                  }
                 }
               }
             }
@@ -110,10 +130,12 @@ class LeitaiState extends State<LeitaiPage> {
           leitaiList = leitaiList.sublist(0, 100);
         }
 
-        if (widget.name == null || widget.name == '') {
+        if ((widget.name == null || widget.name == '') &&
+            (widget.power == null || widget.power.isEmpty)) {
           widget.title = '$process';
         } else {
-          widget.title = '${widget.name} - $process - ${leitaiList.length}';
+          widget.title =
+              '${widget.name} - ${widget.power} - $process - ${leitaiList.length}';
         }
       });
     });
@@ -142,7 +164,7 @@ class LeitaiState extends State<LeitaiPage> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: TextStyle(fontSize: 14),
+          style: TextStyle(fontSize: 13),
         ),
         actions: <Widget>[
           Container(

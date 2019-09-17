@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gwgo_helper/page/home/left_drawer_widget.dart';
 import 'page/leitai_page.dart';
 import 'promise.dart';
@@ -31,7 +32,11 @@ class HomePageState extends State<HomePage> {
   ];
 
   TextEditingController nameController = new TextEditingController();
+  TextEditingController powerController = new TextEditingController();
+
   var _searchName = "";
+  var _searchPower = "";
+
 
   @override
   Widget build(BuildContext context) {
@@ -169,15 +174,40 @@ class HomePageState extends State<HomePage> {
                 return StatefulBuilder(
                   builder: (context, state) {
                     return AlertDialog(
-                      title: Text('输入要搜索人的呢称'),
+                      title: Text('输入要搜索人的昵称和战力'),
                       content: Container(
-                        child: TextField(
-                          controller: nameController,
-                          onChanged: (String value) {
-                            state(() {
-                              _searchName = nameController.text;
-                            });
-                          },
+                        height: 120,
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              width: 150,
+                              child: TextField(
+                                controller: nameController,
+                                decoration: InputDecoration(hintText: '昵称'),
+                                onChanged: (String value) {
+                                  state(() {
+                                    _searchName = nameController.text;
+                                  });
+                                },
+                              ),
+                            ),
+                            Container(
+                              width: 150,
+                              child: TextField(
+                                controller: powerController,
+                                decoration: InputDecoration(
+                                  hintText: '战力',
+                                ),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                onChanged: (String value) {
+                                  state(() {
+                                    _searchPower = powerController.text;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       actions: <Widget>[
@@ -199,12 +229,12 @@ class HomePageState extends State<HomePage> {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: (null == _searchName ||
-                                  _searchName.isEmpty)
+                                  _searchName.isEmpty) && (null == _searchPower || _searchPower.isEmpty)
                               ? null
                               : () {
                                   Navigator.of(context).pop();
                                   print('点击了确认');
-                                  _openSingleLeitaiPage(nameController.text);
+                                  _openSingleLeitaiPage(_searchName, _searchPower);
                                 },
                         )
                       ],
@@ -220,7 +250,7 @@ class HomePageState extends State<HomePage> {
     }
   }
 
-  _openSingleLeitaiPage(String name) {
+  _openSingleLeitaiPage(String name, String power) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -228,6 +258,7 @@ class HomePageState extends State<HomePage> {
           return LeitaiPage(
             LeitaiPage.LEITAI_INDEX,
             name: name,
+            power: power,
           );
         },
       ),

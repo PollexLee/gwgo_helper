@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:kongqw="http://schemas.android.com/apk/res-auto"
-    android:layout_width="100dp"
-    android:layout_height="115dp"
-    android:orientation="vertical">
+    android:layout_width="80dp"
+    android:layout_height="106dp">
 
     <com.example.gwgo_helper.widget.RockerView
         android:id="@+id/rocker_view"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         kongqw:areaBackground="@mipmap/area_background"
         kongqw:rockerBackground="@mipmap/rocker_background"
-        kongqw:rockerRadius="21dp" />
+        kongqw:rockerRadius="16.5dp" />
 
     <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginLeft="75dp"
-        android:layout_marginTop="90dp"
+        android:id="@+id/ivBack"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:scaleType="centerInside"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/ic_flight_black_24dp"
+        />
+
+    <ImageView
+        android:id="@+id/ivMove"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginLeft="27dp"
+        android:layout_marginTop="80dp"
         android:scaleType="centerInside"
         android:src="@drawable/ic_zoom_out_map_black_24dp" />
 

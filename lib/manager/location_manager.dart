@@ -84,14 +84,8 @@ class LocationManager {
       leftBottomLocation.latitude -= leitai_distance;
       leftBottomLocation.longitude -= leitai_distance;
     } else if (leftBottomLocation.longitude == -1) {
-      // 左下经纬度是-1，说明是自定义位置，
-      if (null == selectLeftBottomLocation || null == selectRightTopLocation) {
-        toast('没有选择有效的自定义位置，请重新设置');
-        return null;
-      } else {
-        leftBottomLocation = selectLeftBottomLocation;
-        rightTopLocation = selectRightTopLocation;
-      }
+      // 左下经纬度是-1，说明是自定义位置切没有选择有效的位置
+      toast('没有选择有效的自定义位置，请重新设置');
     }
     return [leftBottomLocation, rightTopLocation];
   }

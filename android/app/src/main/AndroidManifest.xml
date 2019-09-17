@@ -70,7 +70,9 @@
             android:name=".map.SelectLocationMapActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LaunchTheme" />
-        <activity android:name=".map.SelectAreaMapActivity" />
+        <activity android:name=".map.SelectAreaMapActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/LaunchTheme"/>
 
         <service
             android:name=".MockService"

@@ -74,11 +74,6 @@ final List<MockLocation> startList = [
   MockLocation(41757996, 123303680), // 沈阳
   MockLocation(22997587, 113105621), // 广州
   MockLocation(31907873, 118543854), // 南京
-  // MockLocation(25213017, 110232697), // 桂林城区
-  // MockLocation(29465905, 106425934), // 重庆
-  // MockLocation(33537961, 116853333), // 宿州
-  // // MockLocation(35865683, 120047607), // 青岛黄岛区
-  // MockLocation(35882931, 120037308), // 青岛黄岛区
 ];
 
 final List<MockLocation> endList = [
@@ -92,6 +87,24 @@ final List<MockLocation> endList = [
   MockLocation(23208534, 113363800),
   MockLocation(32349803, 118957214),
 ];
+
+// 自定区域
+String SELECT_AREA_KEY = 'select_area_key';
+saveSelectArea(String area) async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.setString(SELECT_AREA_KEY, area);
+}
+
+parseArea(String area) {
+  List<String> array = area.split('|');
+  var minList = array[0].split(',');
+  var maxList = array[1].split(',');
+  // 把经纬度，转换成对应格式复制给自定义位置 数据
+  startList[1].latitude = (double.parse(minList[0]) * 1e6).toInt();
+  startList[1].longitude = (double.parse(minList[1]) * 1e6).toInt();
+  endList[1].latitude = (double.parse(maxList[0]) * 1e6).toInt();
+  endList[1].longitude = (double.parse(maxList[1]) * 1e6).toInt();
+}
 
 /// 是否起飞
 bool isFly = false;
@@ -214,5 +227,9 @@ class Config {
         Navigator.pushNamed(context, '/help');
       });
     }
+
+    // 初始化 自定义区域数值
+    var area = pref.getString(SELECT_AREA_KEY);
+    parseArea(area);
   }
 }

@@ -50,10 +50,10 @@ class LeitaiManager implements Callback {
       count++;
       scanning(currentLat, currentLon);
       // 扫描擂台距离是多少？
-      if ((currentLon += 45000) < rightTopLocation.longitude) {
+      if ((currentLon += 44000) < rightTopLocation.longitude) {
         // scanning(currentLat, currentLon);
       } else {
-        currentLat += 35000;
+        currentLat += 34000;
         currentLon = leftBottomLocation.longitude;
         if (currentLat > rightTopLocation.latitude) {
           isArea = false;
@@ -129,7 +129,7 @@ class LeitaiManager implements Callback {
     if (count == id) {
       callback(leitaiList, '扫描完成');
     } else {
-      callback(leitaiList, '扫描进度 $count/$id');
+      callback(leitaiList, '进度 $count/$id');
     }
   }
 }

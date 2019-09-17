@@ -1,5 +1,6 @@
 package com.example.gwgo_helper
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,8 @@ import android.os.Build
 import android.content.Context.WINDOW_SERVICE
 import android.util.Log
 import android.view.*
+import android.widget.ImageView
+import android.widget.Toast
 import com.example.gwgo_helper.widget.RockerView
 
 /**
@@ -24,6 +27,8 @@ class FloatWindowHelper {
     var windowManager: WindowManager? = null
     var floatView: View? = null
     var rockerView: RockerView? = null
+    var ivMove: ImageView? = null
+    var ivBack: ImageView? = null
     var onAngleChangeListener: RockerView.OnAngleChangeListener? = null
     var isMove = false
     var x = 0
@@ -50,6 +55,7 @@ class FloatWindowHelper {
     /**
      * 显示摇杆
      */
+    @SuppressLint("ClickableViewAccessibility")
     fun showFloatingWindow(context: Context) {
         // 设置LayoutParam
         layoutParams = WindowManager.LayoutParams()
@@ -72,8 +78,12 @@ class FloatWindowHelper {
             // 新建悬浮窗控件
             floatView = LayoutInflater.from(context).inflate(R.layout.float_window_layout, null)
             rockerView = floatView!!.findViewById(R.id.rocker_view)
+            ivMove = floatView!!.findViewById(R.id.ivMove)
+            ivBack = floatView!!.findViewById(R.id.ivBack)
+
             rockerView!!.setCallBackMode(RockerView.CallBackMode.CALL_BACK_MODE_MOVE)
-            floatView!!.setOnTouchListener { v, event ->
+
+            floatView!!.setOnTouchListener { _, event ->
                 Log.d("pollex", "event = ${event.action}")
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
@@ -99,6 +109,15 @@ class FloatWindowHelper {
                     }
                 }
                 false
+            }
+
+            ivBack!!.setOnClickListener {
+                val intent = context.packageManager.getLaunchIntentForPackage("com.tencent.gwgohelper")
+                if (intent == null) {
+                    Toast.makeText(context, "未安装指示器", Toast.LENGTH_LONG).show()
+                } else {
+                    context.startActivity(intent)
+                }
             }
         }
         // 将悬浮窗控件添加到WindowManager

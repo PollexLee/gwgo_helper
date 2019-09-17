@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:gwgo_helper/manager/PackageInfoManager.dart';
 import 'package:gwgo_helper/model/deviceInfo.dart';
 
 import './utils/common_utils.dart';
@@ -35,7 +36,9 @@ class PromiseInstance {
   }
 
   /// 初始化所有数据, 有问题 弹窗提示
-   init(BuildContext context) async {
+  init(BuildContext context) async {
+    // 初始化版本信息
+    PackageInfoManager.init();
     // DialogUtils.showProgressDialog(context, '初始化中...');
     // 获取imei
     imeiList = await _getImeiList();
@@ -51,6 +54,25 @@ class PromiseInstance {
       DialogUtils.hideProgressDialog();
       DialogUtils.showNetworkErrorDialog(context);
       return;
+    }
+
+    // _deviceInfo.version = '2.1.5|修复bug|1';
+    // 根据版本信息做出提示
+    if (null != _deviceInfo.version && _deviceInfo.version.isNotEmpty) {
+      try {
+        var versionArray = _deviceInfo.version.split('|');
+        var version = versionArray[0];
+        var msg = versionArray[1];
+        var force = versionArray[2];
+
+        if (version != PackageInfoManager.packageVersion) {
+          DialogUtils.hideProgressDialog();
+          DialogUtils.showUpdateDialog(context, version, msg, true);
+          return;
+        }
+      } catch (exception) {
+        print('版本更新数据解析异常: $exception');
+      }
     }
 
     // 获取当前网络时间
@@ -72,12 +94,14 @@ class PromiseInstance {
     var dio = Dio();
     dio.options.headers.addAll({'Content-Type': 'application/json'});
     try {
+      //   Response response = await dio
+      // .get('http://192.168.123.137:8848/getDeviceInfo?imei=${imeiList[0]}');
       Response response = await dio
           .get('http://65.49.213.166:8848/getDeviceInfo?imei=${imeiList[0]}');
       print(response.data);
       DeviceInfo deviceInfo = DeviceInfo.fromJson(response.data);
 
-       // 每个用户都有权限，到8月5日
+      // 每个用户都有权限，到8月5日
       //  DeviceInfo deviceInfo = DeviceInfo();
       //  deviceInfo.expireTime = 1565004251000;
       return deviceInfo;
@@ -116,6 +140,24 @@ class PromiseInstance {
         return false;
       }
     }
+
+    if (null != _deviceInfo.version && _deviceInfo.version.isNotEmpty) {
+      try {
+        var versionArray = _deviceInfo.version.split('|');
+        var version = versionArray[0];
+        var msg = versionArray[1];
+        var force = versionArray[2];
+
+        if (version != PackageInfoManager.packageVersion) {
+          DialogUtils.hideProgressDialog();
+          DialogUtils.showUpdateDialog(context, version, msg, true);
+          return false;
+        }
+      } catch (exception) {
+        print('版本更新数据解析异常: $exception');
+      }
+    }
+
     // 有效期短语
     if (_deviceInfo.expireTime < netTime) {
       // 到期

@@ -13,14 +13,21 @@ import 'package:convert/convert.dart';
 //获取到插件与原生的交互通道
 const jumpPlugin = const MethodChannel('com.pollex.gwgo/plugin');
 
-startSelectLocation(Function listener){
-jumpPlugin.setMethodCallHandler((MethodCall call) async {
+startSelectLocation(Function listener) {
+  jumpPlugin.setMethodCallHandler((MethodCall call) async {
     assert(call.method == 'setMockLocation');
     print('setMockLocation, 参数是：${call.arguments}');
     listener(call.arguments.toString());
   });
-
   mackLocation();
+}
+
+setSelectArea(Function listener){
+  jumpPlugin.setMethodCallHandler((MethodCall call) async {
+    assert(call.method == 'setArea');
+    listener(call.arguments.toString());
+  });
+  openSelectAreaPage();
 }
 
 Future teleport(double lat, double lon) async {
@@ -70,8 +77,10 @@ _flyFromTo(double toLat, double toLon) async {
         /// 移动距离 / 最大距离Î
         var moveLat = latDiff / biggest * 0.01;
         var moveLon = lonDiff / biggest * 0.01;
-        _fly(double.parse((location.latitude + moveLat).toStringAsFixed(6)),
-            double.parse((location.longitude + moveLon).toStringAsFixed(6)), isStartAir);
+        _fly(
+            double.parse((location.latitude + moveLat).toStringAsFixed(6)),
+            double.parse((location.longitude + moveLon).toStringAsFixed(6)),
+            isStartAir);
         Timer(Duration(seconds: 2), () {
           _flyFromTo(toLat, toLon);
         });
@@ -181,10 +190,13 @@ dynamic mackLocation() async {
   await jumpPlugin.invokeMethod('mockLocation');
 }
 
-
 String generateMd5(String data) {
   var content = new Utf8Encoder().convert(data);
   var md5 = crypto.md5;
   var digest = md5.convert(content);
   return hex.encode(digest.bytes);
+}
+
+dynamic openSelectAreaPage() async {
+  await jumpPlugin.invokeMethod('openSelectAreaPage');
 }
