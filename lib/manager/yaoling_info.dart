@@ -17,27 +17,35 @@ class YaolingInfoManager implements Callback {
   static Map<int, Yaoling> yaolingMap;
 
   init() {
-    socketCore = WebSocketCore();
-    socketCore.init(1, (int status) {
-      if (status == 0) {
-        updateYaolingConfig();
-      }
-      print('socketCore.init status = $status');
-    });
+    // socketCore = WebSocketCore();
+    // socketCore.init(1, (int status) {
+    //   if (status == 0) {
+    //     updateYaolingConfig();
+    //   }
+    //   print('socketCore.init status = $status');
+    // });
+
+    updateYaolingConfig();
   }
 
   /// 更新妖灵配置信息
   updateYaolingConfig() {
     /// 组建上传参数
-    Map<String, dynamic> map = HashMap();
-    JsonCodec jsonCodec = JsonCodec();
-    map['request_type'] = '1004';
-    int requestid = int.parse(
-        DateTime.now().millisecondsSinceEpoch.toString().substring(8));
-    map['requestid'] = requestid;
-    map['platform'] = 0;
-    map['cfg_type'] = 1;
-    socketCore.send(requestid, jsonCodec.encode(map), this);
+    // Map<String, dynamic> map = HashMap();
+    // JsonCodec jsonCodec = JsonCodec();
+    // map['request_type'] = '1004';
+    // int requestid = int.parse(
+    //     DateTime.now().millisecondsSinceEpoch.toString().substring(8));
+    // map['requestid'] = requestid;
+    // map['platform'] = 0;
+    // map['cfg_type'] = 0;
+    // map['gwgo_token'] = '8517517354590437376';
+    // map['appid'] = 'wx19376645db21af08';
+    // map['openid'] = 'oxARK5HjVuWCPRfcpRa4EIY9J96c';
+    // socketCore.send(requestid, jsonCodec.encode(map), this);
+
+    // 获取配置的wss请求无效了，我们使用以前的一个配置文件
+    onReceiveData(null);
   }
 
   @override
@@ -47,9 +55,11 @@ class YaolingInfoManager implements Callback {
 
   @override
   onReceiveData(Map<String, dynamic> data) {
-    print(data);
-    socketCore.close();
-    String filename = data['filename'];
+    // print(data);
+    // socketCore.close();
+    // String filename = data['filename'];
+    // sprite_f9e4d4876d5ac919bfc12b4a316d9d05.json
+    String filename = 'sprite_f9e4d4876d5ac919bfc12b4a316d9d05.json';
     print('filename = $filename');
     Future<Response> response =
         dio.get('https://hy.gwgo.qq.com/sync/pet/config/$filename');

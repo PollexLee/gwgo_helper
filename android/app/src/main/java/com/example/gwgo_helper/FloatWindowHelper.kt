@@ -104,6 +104,7 @@ class FloatWindowHelper {
                             y = nowY
                             layoutParams!!.x = layoutParams!!.x + movedX
                             layoutParams!!.y = layoutParams!!.y + movedY
+                            Log.d("pollex", "movedX = $movedX, movedY = $movedY")
                             windowManager!!.updateViewLayout(floatView, layoutParams)
                         }
                     }

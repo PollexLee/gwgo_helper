@@ -8,6 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'model/location.dart';
 
+var token = "";
+var openid = "";
+
 final List<String> plainList = [
   '自带飞行器',
   '咬她的飞行器',
@@ -230,6 +233,8 @@ class Config {
 
     // 初始化 自定义区域数值
     var area = pref.getString(SELECT_AREA_KEY);
-    parseArea(area);
+    if (null != area && area.isNotEmpty) {
+      parseArea(area);
+    }
   }
 }

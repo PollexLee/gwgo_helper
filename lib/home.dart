@@ -20,7 +20,7 @@ class HomePageState extends State<HomePage> {
     '五星御灵团战',
     '彩笔擂台',
     '扫描单人擂台',
-    '服务购买',
+    // '服务购买',
   ];
   List<String> subtitleList = [
     '根据选择的妖灵进行扫描',
@@ -28,7 +28,7 @@ class HomePageState extends State<HomePage> {
     '只打五星御灵团战！',
     '偷擂利器！战力从低到高排序',
     '寻仇利器！扫描选定区域，玩家呢称包含特定字符的擂台',
-    '过期了？购买指示器使用时长',
+    // '过期了？购买指示器使用时长',
   ];
 
   TextEditingController nameController = new TextEditingController();

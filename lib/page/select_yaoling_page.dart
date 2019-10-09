@@ -13,6 +13,14 @@ class SelectYaolingPage extends StatefulWidget {
 class SelectYaolingState extends State<SelectYaolingPage> {
   var groupValue = '1';
 
+  var isSearching = false;
+
+  var _searchLayoutWidth = 0.toDouble();
+  var _searchLayoutHeight = 55.toDouble();
+  var _searchLayoutBgColor = Colors.transparent;
+  var _searchController = TextEditingController();
+  var _searchText = '';
+
   String getLevel() {
     var levelStr = '';
     switch (groupValue) {
@@ -38,6 +46,7 @@ class SelectYaolingState extends State<SelectYaolingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xf0ffffff),
       endDrawer: SelectYaolingDrawerWidget(
         groupValue,
         (level) {
@@ -46,28 +55,106 @@ class SelectYaolingState extends State<SelectYaolingPage> {
         },
       ),
       appBar: AppBar(
-        title: Text('选择扫描妖灵：${getLevel()}', style: TextStyle(fontSize: 16),),
+        title: Text(
+          '选择扫描妖灵：${getLevel()}',
+          style: TextStyle(fontSize: 16),
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(left: 5, right: 5),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
           children: <Widget>[
-            // _buildTitle('稀有妖灵'),
-            Wrap(
-              spacing: 8.0,
-              runSpacing: 1.0,
-              children: _getAllYaolingWidgets(groupValue),
+            SingleChildScrollView(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: <Widget>[
+                    Wrap(
+                      alignment: WrapAlignment.start,
+                      spacing: 6.0,
+                      runSpacing: -6.0,
+                      children: _getAllYaolingWidgets(groupValue),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            // _buildTitle('全员恶人'),
-            // Wrap(
-            //   spacing: 8.0,
-            //   runSpacing: 1.0,
-            //   children: _getYaolingWidgets(SpriteConfig.erenMap),
-            // ),
+            Positioned(
+              right: 15,
+              bottom: 16,
+              child: AnimatedContainer(
+                width: _searchLayoutWidth,
+                height: _searchLayoutHeight,
+                duration: Duration(milliseconds: 300),
+                decoration: BoxDecoration(
+                  color: _searchLayoutBgColor,
+                  borderRadius: BorderRadius.circular(100.toDouble()),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 30),
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          style:
+                              TextStyle(fontSize: 16, color: Colors.blueAccent),
+                          decoration: InputDecoration(
+                            hintText: '妖灵名称',
+                          ),
+                          controller: _searchController,
+                          onChanged: (content) {
+                            setState(() {
+                              _searchText = content;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        toggle();
+                      },
+                      child: Container(
+                        width: 55,
+                        height: 55,
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
+      floatingActionButton: _buildFloatingActionButton(),
+    );
+  }
+
+  toggle() {
+    setState(() {
+      isSearching = !isSearching;
+      _searchLayoutWidth =
+          isSearching ? MediaQuery.of(context).size.width - 30 : 0;
+      // _searchLayoutHeight = isSearching ? 55 : 0;
+      _searchLayoutBgColor =
+          isSearching ? Color(0xffffffff) : Colors.transparent;
+    });
+  }
+
+  Widget _buildFloatingActionButton() {
+    if (isSearching) {
+      return null;
+    }
+    return FloatingActionButton(
+      onPressed: () {
+        toggle();
+      },
+      child: Icon(Icons.search),
     );
   }
 
@@ -83,67 +170,22 @@ class SelectYaolingState extends State<SelectYaolingPage> {
     }
     YaolingInfoManager.yaolingMap.forEach((id, yaoling) {
       if (yaoling.Level.toString() == level) {
-        Widget _child =
-            getYaolingChip(yaoling.Id, yaoling.Name, yaoling.SmallImgPath);
-        Widget chip = GestureDetector(
-          onTap: () {
-            SpriteConfig.toggle(yaoling);
-            setState(() {});
-          },
-          child: _child,
-        );
-        widgetList.add(chip);
+        if (isSearching && yaoling.Name.contains(_searchText) || !isSearching) {
+          Widget _child =
+              getYaolingChip(yaoling.Id, yaoling.Name, yaoling.SmallImgPath);
+          Widget chip = GestureDetector(
+            onTap: () {
+              SpriteConfig.toggle(yaoling);
+              setState(() {});
+            },
+            child: _child,
+          );
+          widgetList.add(chip);
+        }
       }
     });
     return widgetList;
   }
-
-  // List<Widget> _getYaolingWidgets(Map<int, String> spriteMap) {
-  //   List<Widget> widgetList = List();
-  //   if (YaolingInfoManager.yaolingMap == null ||
-  //       YaolingInfoManager.yaolingMap.isEmpty) {
-  //     return widgetList;
-  //   }
-
-  //   if (spriteMap.isEmpty) {
-  //     print('spriteMap is empty');
-  //   }
-
-  //   if (YaolingInfoManager.yaolingMap.isEmpty) {
-  //     print('YaolingInfoManager.yaolingMap is empty');
-  //   }
-
-  //   spriteMap.forEach((id, item) {
-  //     if (YaolingInfoManager.yaolingMap.containsKey(id)) {
-  //       Yaoling yaoling = YaolingInfoManager.yaolingMap[id];
-  //       Widget _child =
-  //           getYaolingChip(yaoling.Id, yaoling.Name, yaoling.SmallImgPath);
-  //       Widget chip = GestureDetector(
-  //         onTap: () {
-  //           SpriteConfig.toggle(yaoling);
-  //           setState(() {});
-  //         },
-  //         child: _child,
-  //       );
-  //       widgetList.add(chip);
-  //     } else {
-  //       Yaoling yaoling = Yaoling();
-  //       yaoling.Id = id;
-  //       yaoling.Name = item;
-  //       Widget _child =
-  //           getYaolingChip(yaoling.Id, yaoling.Name, yaoling.SmallImgPath);
-  //       Widget chip = GestureDetector(
-  //         onTap: () {
-  //           SpriteConfig.toggle(yaoling);
-  //           setState(() {});
-  //         },
-  //         child: _child,
-  //       );
-  //       widgetList.add(chip);
-  //     }
-  //   });
-  //   return widgetList;
-  // }
 
   /// 构建妖灵选择框Widget
   Widget getYaolingChip(int id, String name, String imgUrl) {
@@ -156,10 +198,10 @@ class SelectYaolingState extends State<SelectYaolingPage> {
       _elevation = 2.0;
       _angle = 1.0;
     }
-
     return AnimatedContainer(
       duration: Duration(milliseconds: 200),
       transform: Matrix4.diagonal3Values(_angle, _angle, _angle),
+      width: 110,
       child: Chip(
         elevation: _elevation,
         backgroundColor: _buildBgColor(id),
@@ -167,9 +209,12 @@ class SelectYaolingState extends State<SelectYaolingPage> {
           backgroundColor: Colors.white,
           child: _buildHeader(imgUrl, name),
         ),
-        label: Text(
-          name,
-          style: TextStyle(color: Colors.black, fontSize: 12),
+        label: Container(
+          alignment: Alignment.center,
+          child: Text(
+            name,
+            style: TextStyle(color: Colors.black, fontSize: 12),
+          ),
         ),
       ),
     );
@@ -199,16 +244,5 @@ class SelectYaolingState extends State<SelectYaolingPage> {
 
   bool isSelected(int id) {
     return SpriteConfig.selectedMap.containsKey(id);
-  }
-
-  Widget _buildTitle(String title) {
-    return Container(
-      padding: EdgeInsets.only(top: 10),
-      alignment: Alignment.center,
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-    );
   }
 }

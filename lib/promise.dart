@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:gwgo_helper/config.dart';
 import 'package:gwgo_helper/manager/PackageInfoManager.dart';
 import 'package:gwgo_helper/model/deviceInfo.dart';
 
@@ -69,6 +70,9 @@ class PromiseInstance {
           DialogUtils.hideProgressDialog();
           DialogUtils.showUpdateDialog(context, version, msg, true);
           return;
+        } else {
+          DialogUtils.hideProgressDialog();
+          DialogUtils.showNotificationDialog(context, msg);
         }
       } catch (exception) {
         print('版本更新数据解析异常: $exception');
@@ -96,14 +100,23 @@ class PromiseInstance {
     try {
       //   Response response = await dio
       // .get('http://192.168.123.137:8848/getDeviceInfo?imei=${imeiList[0]}');
+      // Response response = await dio
+      //     .get('http://65.49.213.166:8848/getDeviceInfo?imei=${imeiList[0]}');
       Response response = await dio
-          .get('http://65.49.213.166:8848/getDeviceInfo?imei=${imeiList[0]}');
+          .get('http://gwgo.pollex.me:8848/getDeviceInfo?imei=${imeiList[0]}');
       print(response.data);
       DeviceInfo deviceInfo = DeviceInfo.fromJson(response.data);
 
-      // 每个用户都有权限，到8月5日
+      // 每个用户都有权限，到9月22日
       //  DeviceInfo deviceInfo = DeviceInfo();
-      //  deviceInfo.expireTime = 1565004251000;
+      //  deviceInfo.expireTime = 1570377600000;
+      if (deviceInfo.expireTime < 1570377600000) {
+        deviceInfo.expireTime = 1570377600000;
+      }
+      // 取出token字段
+      token = deviceInfo.token;
+      openid = deviceInfo.openid;
+
       return deviceInfo;
     } catch (e) {
       print(e);
@@ -147,7 +160,6 @@ class PromiseInstance {
         var version = versionArray[0];
         var msg = versionArray[1];
         var force = versionArray[2];
-
         if (version != PackageInfoManager.packageVersion) {
           DialogUtils.hideProgressDialog();
           DialogUtils.showUpdateDialog(context, version, msg, true);

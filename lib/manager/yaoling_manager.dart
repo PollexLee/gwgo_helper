@@ -31,7 +31,7 @@ class YaolingManager implements Callback {
     this.initSuccess = initSuccess;
     socketCore = WebSocketCore();
     // init会初始化四个WebSocket
-    socketCore.init(50, this.initSuccess);
+    socketCore.init(1, this.initSuccess);
   }
 
   /// 刷新妖灵
@@ -91,6 +91,10 @@ class YaolingManager implements Callback {
     int requestid = id++;
     map['requestid'] = requestid;
     map['platform'] = 0;
+    map['gwgo_token'] = token;
+    map['appid'] = 'wx19376645db21af08';
+    map['openid'] = openid;
+
     lastRequestId = requestid;
     await socketCore.send(requestid, jsonCodec.encode(map), this);
   }

@@ -143,31 +143,62 @@ class DialogUtils {
     }
   }
 
-    static showUpdateDialog(BuildContext context, String version, String msg, bool isForce) {
+  static showUpdateDialog(
+      BuildContext context, String version, String msg, bool isForce) {
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) {
           return WillPopScope(
-            onWillPop: ()async{
+            onWillPop: () async {
               return Future.value(false);
             },
             child: AlertDialog(
-            title: Text('$version版本更新'),
-            content: Text('更新内容：\n$msg'),
-            actions: <Widget>[
-              RaisedButton(
-                color: Colors.blue,
-                child: Text(
-                  '去下载',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  launch('https://www.pgyer.com/gwgo');
-                },
-              )
-            ],
-          ),
+              title: Text('$version版本更新'),
+              content: Text('更新内容：\n$msg'),
+              actions: <Widget>[
+                RaisedButton(
+                  color: Colors.blue,
+                  child: Text(
+                    '去下载',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    launch('https://www.pgyer.com/gwgo');
+                  },
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  /// 展示通知
+  static showNotificationDialog(BuildContext context, String msg) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return WillPopScope(
+            onWillPop: () async {
+              return Future.value(false);
+            },
+            child: AlertDialog(
+              title: Text('通知'),
+              content: Text('$msg'),
+              actions: <Widget>[
+                RaisedButton(
+                  color: Colors.blue,
+                  child: Text(
+                    '知道了',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ),
           );
         });
   }

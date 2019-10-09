@@ -35,7 +35,6 @@ class LeitaiMapActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map_leitai)
 
-
         binding.map.onCreate(savedInstanceState)
         aMap = binding.map.map
 

@@ -7,6 +7,8 @@ import 'package:gwgo_helper/model/leitai.dart';
 
 import 'location_manager.dart';
 
+import 'package:gwgo_helper/config.dart';
+
 class LeitaiManager implements Callback {
   WebSocketCore socketCore;
 
@@ -25,7 +27,7 @@ class LeitaiManager implements Callback {
     this.initSuccess = initSuccess;
     socketCore = WebSocketCore();
     // init会初始化四个WebSocket
-    socketCore.init(10, this.initSuccess);
+    socketCore.init(1, this.initSuccess);
   }
 
   /// 刷新擂台
@@ -73,6 +75,9 @@ class LeitaiManager implements Callback {
     int requestid = ++id;
     map['requestid'] = requestid;
     map['platform'] = '0';
+    map['gwgo_token'] = token;
+    map['appid'] = 'wx19376645db21af08';
+    map['openid'] = openid;
     lastRequestId = requestid;
     socketCore.send(requestid, jsonCodec.encode(map), this);
   }
@@ -100,7 +105,7 @@ class LeitaiManager implements Callback {
     tempList.forEach((sprite) {
       Map<String, dynamic> spriteMap = sprite;
       Leitai leitai = Leitai.fromJson(spriteMap);
-      if (leitai.latitude != 0 && leitai.longtitude != 0) {
+      if (leitai.latitude != null && leitai.latitude != 0 && leitai.longtitude != 0) {
         leitaiList.add(leitai);
         if (leitai.longtitude < minLon) {
           minLon = leitai.longtitude;

@@ -8,6 +8,7 @@ import 'package:gwgo_helper/core/websocket_callback.dart';
 
 /// 用来建立WebSocket连接的地址
 String URL =
+    // wss://publicld.gwgo.qq.com/?account_value=0&account_type=0&appid=0&token=0
     "wss://publicld.gwgo.qq.com?account_value=0&account_type=0&appid=0&token=0";
 
 class WebSocketCore {
