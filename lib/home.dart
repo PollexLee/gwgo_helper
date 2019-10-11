@@ -5,7 +5,6 @@ import 'package:gwgo_helper/page/home/left_drawer_widget.dart';
 import 'page/leitai_page.dart';
 import 'promise.dart';
 import 'config.dart';
-import 'utils/common_utils.dart';
 
 class HomePage extends StatefulWidget {
   @override

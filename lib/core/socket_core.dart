@@ -197,10 +197,10 @@ class GwgoSocketWrap {
       }
       count++;
       print('循环请求: $count次');
-      // if (count >= 120) {
-      //   close();
-      //   return;
-      // }
+      if (count >= 3) {
+        dataHandler(null);
+        return;
+      }
       if (getSocket() != null && getSocket().readyState == WebSocket.open) {
         getSocket().add(data);
       } else {
@@ -240,94 +240,102 @@ class GwgoSocketWrap {
   // 收到数据
   // todo  处理接口返回 断开的情况
   void dataHandler(data) {
-    if (data.runtimeType == String) {
-      if (data.toString().contains('pass')) {
-        status = ready;
-        print('socket连接成功');
-        _connected();
-        if (_request != null) {
-          status = waitting;
-        }
-        // if (_request != null) {
-        //   _handleRequest();
-        // }
-      } else {
-        print('未知的字符串$data');
-      }
+    if (null == data) {
+      // 接口超时时，data是null，触发空回调
+      _request.callback.onReceiveData(null);
+      return;
     } else {
-      // if (_timer != null) {
-      //   _timer.cancel();
-      // }
-
-      if (_request == null) {
-        return;
-      }
-
-      // 调用对应请求的callback
-      Uint8List list = data;
-      Utf8Decoder decoder = Utf8Decoder(allowMalformed: true);
-      String result = '';
-      try {
-        result = decoder.convert(list.sublist(4));
-      } catch (exception) {
-        print(exception);
-      }
-
-      /// 替换掉不显示的���殊字符
-      result = result.replaceAll(String.fromCharCode(0x01), ' ');
-      result = result.replaceAll(String.fromCharCode(0x02), ' ');
-      result = result.replaceAll(String.fromCharCode(0x03), ' ');
-      result = result.replaceAll(String.fromCharCode(0x04), ' ');
-      result = result.replaceAll(String.fromCharCode(0x05), ' ');
-      result = result.replaceAll(String.fromCharCode(0x06), ' ');
-      result = result.replaceAll(String.fromCharCode(0x07), ' ');
-      result = result.replaceAll(String.fromCharCode(0x08), ' ');
-      result = result.replaceAll(String.fromCharCode(0x09), ' ');
-      result = result.replaceAll(String.fromCharCode(0x10), ' ');
-      result = result.replaceAll(String.fromCharCode(0x11), ' ');
-      result = result.replaceAll(String.fromCharCode(0x12), ' ');
-      result = result.replaceAll(String.fromCharCode(0x13), ' ');
-      result = result.replaceAll(String.fromCharCode(0x14), ' ');
-      result = result.replaceAll(String.fromCharCode(0x0a), ' ');
-      result = result.replaceAll(String.fromCharCode(0x0b), ' ');
-      result = result.replaceAll(String.fromCharCode(0x0c), ' ');
-      result = result.replaceAll(String.fromCharCode(0x0d), ' ');
-      result = result.replaceAll(String.fromCharCode(0x0e), ' ');
-      result = result.replaceAll(String.fromCharCode(0x0f), ' ');
-      result = result.replaceAll(String.fromCharCode(0x7f), ' ');
-      print('返回数据：$result');
-
-      JsonCodec jsonCodec = JsonCodec();
-      Map<String, dynamic> resultMap = Map();
-      try {
-        if (result.contains('filename')) {
-          // 是文件配置信息，就替换掉空格
-          result = result.trim().replaceAll(' ', '"');
+      if (data.runtimeType == String) {
+        if (data.toString().contains('pass')) {
+          status = ready;
+          print('socket连接成功');
+          _connected();
+          if (_request != null) {
+            status = waitting;
+          }
+          // if (_request != null) {
+          //   _handleRequest();
+          // }
+        } else {
+          print('未知的字符串$data');
         }
-        resultMap = jsonCodec.decode(result);
+      } else {
+        // if (_timer != null) {
+        //   _timer.cancel();
         // }
-      } catch (exc) {
-        print(exc.toString());
-        print(list);
-      }
-      int id = resultMap['requestid'];
-      if (id != _request.id) {
-        print('id匹配失败，id = $id, requestId = ${_request.id}');
-        return;
-      }
-      if (_timer != null) {
-        _timer.cancel();
-      }
-      print('id匹配成功，id = $id');
 
-      _request.callback.onReceiveData(resultMap);
-      _request = null;
-      _timer = null;
-      status = ready;
-      if (null != _gwgoCallback) {
-        _gwgoCallback();
+        if (_request == null) {
+          return;
+        }
+
+        // 调用对应请求的callback
+        Uint8List list = data;
+        Utf8Decoder decoder = Utf8Decoder(allowMalformed: true);
+        String result = '';
+        try {
+          result = decoder.convert(list.sublist(4));
+        } catch (exception) {
+          print(exception);
+        }
+
+        /// 替换掉不显示的���殊字符
+        result = result.replaceAll(String.fromCharCode(0x01), ' ');
+        result = result.replaceAll(String.fromCharCode(0x02), ' ');
+        result = result.replaceAll(String.fromCharCode(0x03), ' ');
+        result = result.replaceAll(String.fromCharCode(0x04), ' ');
+        result = result.replaceAll(String.fromCharCode(0x05), ' ');
+        result = result.replaceAll(String.fromCharCode(0x06), ' ');
+        result = result.replaceAll(String.fromCharCode(0x07), ' ');
+        result = result.replaceAll(String.fromCharCode(0x08), ' ');
+        result = result.replaceAll(String.fromCharCode(0x09), ' ');
+        result = result.replaceAll(String.fromCharCode(0x10), ' ');
+        result = result.replaceAll(String.fromCharCode(0x11), ' ');
+        result = result.replaceAll(String.fromCharCode(0x12), ' ');
+        result = result.replaceAll(String.fromCharCode(0x13), ' ');
+        result = result.replaceAll(String.fromCharCode(0x14), ' ');
+        result = result.replaceAll(String.fromCharCode(0x0a), ' ');
+        result = result.replaceAll(String.fromCharCode(0x0b), ' ');
+        result = result.replaceAll(String.fromCharCode(0x0c), ' ');
+        result = result.replaceAll(String.fromCharCode(0x0d), ' ');
+        result = result.replaceAll(String.fromCharCode(0x0e), ' ');
+        result = result.replaceAll(String.fromCharCode(0x0f), ' ');
+        result = result.replaceAll(String.fromCharCode(0x7f), ' ');
+        print('返回数据：$result');
+
+        JsonCodec jsonCodec = JsonCodec();
+        Map<String, dynamic> resultMap = Map();
+        try {
+          if (result.contains('filename')) {
+            // 是文件配置信息，就替换掉空格
+            result = result.trim().replaceAll(' ', '"');
+          }
+          resultMap = jsonCodec.decode(result);
+          // }
+        } catch (exc) {
+          print(exc.toString());
+          print(list);
+        }
+        int id = resultMap['requestid'];
+        if (id != _request.id) {
+          print('id匹配失败，id = $id, requestId = ${_request.id}');
+          return;
+        } else {
+          print('id匹配成功，id = $id');
+        }
+
+        if (_timer != null) {
+          _timer.cancel();
+        }
+
+        _request.callback.onReceiveData(resultMap);
       }
-      // 当前request已处理完成
     }
+    _request = null;
+    _timer = null;
+    status = ready;
+    if (null != _gwgoCallback) {
+      _gwgoCallback();
+    }
+    // 当前request已处理完成
   }
 }

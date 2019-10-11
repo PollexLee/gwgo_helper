@@ -92,6 +92,10 @@ class LeitaiManager implements Callback {
   @override
   onReceiveData(Map<String, dynamic> resultMap) {
     count++;
+    if (null == resultMap) {
+      callback(null, '进度 $count/$id');
+      return;
+    }
     List<dynamic> tempList = resultMap['dojo_list'];
     List<Leitai> leitaiList = List();
     if (tempList == null || tempList.isEmpty) {
@@ -105,7 +109,9 @@ class LeitaiManager implements Callback {
     tempList.forEach((sprite) {
       Map<String, dynamic> spriteMap = sprite;
       Leitai leitai = Leitai.fromJson(spriteMap);
-      if (leitai.latitude != null && leitai.latitude != 0 && leitai.longtitude != 0) {
+      if (leitai.latitude != null &&
+          leitai.latitude != 0 &&
+          leitai.longtitude != 0) {
         leitaiList.add(leitai);
         if (leitai.longtitude < minLon) {
           minLon = leitai.longtitude;
