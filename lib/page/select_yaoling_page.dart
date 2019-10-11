@@ -189,31 +189,36 @@ class SelectYaolingState extends State<SelectYaolingPage> {
 
   /// 构建妖灵选择框Widget
   Widget getYaolingChip(int id, String name, String imgUrl) {
-    var _angle;
+    var _width;
     var _elevation = 2.0;
     if (isSelected(id)) {
       _elevation = 10.0;
-      _angle = 1.03;
+      _width = 110.0;
     } else {
       _elevation = 2.0;
-      _angle = 1.0;
+      _width = 108.0;
     }
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 200),
-      transform: Matrix4.diagonal3Values(_angle, _angle, _angle),
+    return Container(
+      alignment: Alignment.center,
       width: 110,
-      child: Chip(
-        elevation: _elevation,
-        backgroundColor: _buildBgColor(id),
-        avatar: CircleAvatar(
-          backgroundColor: Colors.white,
-          child: _buildHeader(imgUrl, name),
-        ),
-        label: Container(
-          alignment: Alignment.center,
-          child: Text(
-            name,
-            style: TextStyle(color: Colors.black, fontSize: 12),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        // transform: Matrix4.diagonal3Values(_angle, _angle, _angle),
+        alignment: Alignment.center,
+        width: _width,
+        child: Chip(
+          elevation: _elevation,
+          backgroundColor: _buildBgColor(id),
+          avatar: CircleAvatar(
+            backgroundColor: Colors.white,
+            child: _buildHeader(imgUrl, name),
+          ),
+          label: Container(
+            alignment: Alignment.center,
+            child: Text(
+              name,
+              style: TextStyle(color: Colors.black, fontSize: 12),
+            ),
           ),
         ),
       ),
