@@ -36,7 +36,6 @@ class HomePageState extends State<HomePage> {
   var _searchName = "";
   var _searchPower = "";
 
-
   @override
   Widget build(BuildContext context) {
     this.context = context;
@@ -198,7 +197,9 @@ class HomePageState extends State<HomePage> {
                                   hintText: '战力',
                                 ),
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                inputFormatters: [
+                                  WhitelistingTextInputFormatter.digitsOnly
+                                ],
                                 onChanged: (String value) {
                                   state(() {
                                     _searchPower = powerController.text;
@@ -228,12 +229,14 @@ class HomePageState extends State<HomePage> {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: (null == _searchName ||
-                                  _searchName.isEmpty) && (null == _searchPower || _searchPower.isEmpty)
+                                      _searchName.isEmpty) &&
+                                  (null == _searchPower || _searchPower.isEmpty)
                               ? null
                               : () {
                                   Navigator.of(context).pop();
                                   print('点击了确认');
-                                  _openSingleLeitaiPage(_searchName, _searchPower);
+                                  _openSingleLeitaiPage(
+                                      _searchName, _searchPower);
                                 },
                         )
                       ],

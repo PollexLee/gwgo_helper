@@ -66,7 +66,7 @@ class LeitaiState extends State<LeitaiPage> {
 
   void _refreshLeitai() {
     manager.refreshLeitai((List<Leitai> data, String process) {
-      if (data.isNotEmpty) {
+      if (null != data && data.isNotEmpty) {
         data.forEach((leitai) {
           if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL &&
               leitai.isNormal()) {
