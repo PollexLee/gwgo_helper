@@ -45,6 +45,9 @@ final List<String> locationList = [
   '沈阳',
   '广州',
   '南京',
+  '上海',
+  '东台',
+  '西宁',
 ];
 
 /// 我的周围 距离
@@ -77,6 +80,10 @@ final List<MockLocation> startList = [
   MockLocation(41757996, 123303680), // 沈阳
   MockLocation(22997587, 113105621), // 广州
   MockLocation(31907873, 118543854), // 南京
+  MockLocation(30786677,121124268), // 南京
+  MockLocation(32699489,120202789), // 南京
+  MockLocation(36552672,101642761), // 南京
+
 ];
 
 final List<MockLocation> endList = [
@@ -89,6 +96,10 @@ final List<MockLocation> endList = [
   MockLocation(41913519, 123552246),
   MockLocation(23208534, 113363800),
   MockLocation(32349803, 118957214),
+  MockLocation(31431007,121893311),
+  MockLocation(32964891,120443115),
+  MockLocation(36700356,101814423),
+
 ];
 
 // 自定区域

@@ -28,7 +28,7 @@ class DrawerState extends State<DrawerLayout> {
         primary: true,
         child: Container(
           color: Colors.white,
-          height: 1000,
+          height: 1200,
           width: 230,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
