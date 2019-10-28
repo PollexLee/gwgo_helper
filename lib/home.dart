@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gwgo_helper/page/home/left_drawer_widget.dart';
+import 'package:gwgo_helper/utils/common_utils.dart';
 import 'page/leitai_page.dart';
 import 'promise.dart';
 import 'config.dart';
@@ -33,8 +34,14 @@ class HomePageState extends State<HomePage> {
   TextEditingController nameController = new TextEditingController();
   TextEditingController powerController = new TextEditingController();
 
+  TextEditingController tokenController = new TextEditingController();
+  TextEditingController openidController = new TextEditingController();
+
   var _searchName = "";
   var _searchPower = "";
+
+  var _token = '';
+  var _openid = '';
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +71,6 @@ class HomePageState extends State<HomePage> {
           Container(
             height: 50,
             alignment: Alignment.center,
-            margin: EdgeInsets.only(right: 15),
             child: IconButton(
               icon: Icon(
                 Icons.place,
@@ -74,6 +80,77 @@ class HomePageState extends State<HomePage> {
                 if (await PromiseInstance(context).isPromise(context)) {
                   Navigator.pushNamed(context, '/plainSetting');
                 }
+              },
+            ),
+          ),
+          Container(
+            height: 50,
+            alignment: Alignment.center,
+            margin: EdgeInsets.only(right: 15),
+            child: IconButton(
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return StatefulBuilder(
+                      builder: (context, state) {
+                        return AlertDialog(
+                          title: Text('输入token和openid'),
+                          content: Container(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                TextField(
+                                  controller: tokenController,
+                                  decoration:
+                                      InputDecoration(hintText: 'token'),
+                                  onChanged: (text) {
+                                    state(() {
+                                      _token = text;
+                                    });
+                                  },
+                                ),
+                                TextField(
+                                  controller: openidController,
+                                  decoration:
+                                      InputDecoration(hintText: 'openid'),
+                                  onChanged: (text) {
+                                    state(() {
+                                      _openid = text;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text('取消'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            FlatButton(
+                              child: Text('更新'),
+                              onPressed: (_token == '' || _openid == '')
+                                  ? null
+                                  : () {
+                                      token = tokenController.text;
+                                      openid = openidController.text;
+                                      toast('更新成功');
+                                      Navigator.pop(context);
+                                    },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                );
               },
             ),
           ),

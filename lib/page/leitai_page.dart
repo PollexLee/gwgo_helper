@@ -81,16 +81,24 @@ class LeitaiState extends State<LeitaiPage> {
               // 单人擂台
               if (null != widget.name && widget.name.isNotEmpty) {
                 // 判断昵称是否包含
-                if (leitai.winner_name.contains(widget.name)) {
-                  // 判断战力是否包含
-                  if (null == widget.power ||
-                      widget.power == '' ||
-                      leitai.winner_fightpower.toString() == widget.power) {
+                List<String> names = widget.name.split(' ');
+                names.forEach((name) {
+                  if (leitai.winner_name.contains(name)) {
                     if (!leitaiList.contains(leitai)) {
                       leitaiList.add(richLeitaiInfo(leitai));
                     }
                   }
-                }
+                });
+                // if (leitai.winner_name.contains(widget.name)) {
+                //   // 判断战力是否包含
+                //   if (null == widget.power ||
+                //       widget.power == '' ||
+                //       leitai.winner_fightpower.toString() == widget.power) {
+                //     if (!leitaiList.contains(leitai)) {
+                //       leitaiList.add(richLeitaiInfo(leitai));
+                //     }
+                //   }
+                // }
               } else {
                 // 没有设置昵称
                 // 判断战力是否包含
@@ -116,8 +124,12 @@ class LeitaiState extends State<LeitaiPage> {
       setState(() {
         // 排序
         if (_getLeitaiType(widget.index) == LEITAI_TYPE_NORMAL) {
-          leitaiList.sort((left, right) =>
-              left.getYaolingPower().compareTo(right.getYaolingPower()));
+          if ((widget.name == null || widget.name.isEmpty) &&
+              (widget.power == null || widget.power.isEmpty)) {
+            // 不是单人擂台才排序
+            leitaiList.sort((left, right) =>
+                left.getYaolingPower().compareTo(right.getYaolingPower()));
+          }
         }
         // 只保留前100
         if (leitaiList.length >= 100) {
