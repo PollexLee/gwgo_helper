@@ -187,7 +187,11 @@ class GwgoSocketWrap {
   _loopWriteData(data) {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_isClose) {
-        _timer.cancel();
+        try{
+          _timer.cancel();
+        }catch(e){
+          print(e.toString());
+        }
         _timer = null;
         return;
       }
