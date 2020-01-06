@@ -1,6 +1,7 @@
 package com.example.gwgo_helper;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
@@ -11,10 +12,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 import com.example.gwgo_helper.map.LeitaiMapActivity;
 import com.example.gwgo_helper.map.SelectAreaMapActivity;
 import com.example.gwgo_helper.map.SelectLocationMapActivity;
+import com.example.gwgo_helper.map.SelectScanningPointMapActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +51,6 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
     private final int REQUEST_CODE_LOCATION = 0x002;
     private final int REQUEST_CODE_PERMISSION = 0x001;
     private final int REQUEST_CODE_SELECT_AREA = 0x003;
-
 
     private MockService mockService;
     private boolean isReceive = false;
@@ -158,17 +161,21 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
         } else if (methodCall.method.equals("getLocation")) {
             LocationManager locationManager = (LocationManager) activity.getSystemService(Service.LOCATION_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (activity.checkSelfPermission(
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && activity.checkSelfPermission(
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(activity, "请授予指示器定位权限", Toast.LENGTH_SHORT).show();
                     result.success(null);
                     return;
                 }
             }
 
-//            Criteria criteria = new Criteria();
-//            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-//            criteria.setSpeedRequired(true);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1000, locationListener, Looper.myLooper());
+            // Criteria criteria = new Criteria();
+            // criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            // criteria.setSpeedRequired(true);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1000, locationListener,
+                    Looper.myLooper());
             this.result = result;
         } else if (methodCall.method.equals("getImei")) {
 
@@ -178,7 +185,6 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
             String content = (String) methodCall.arguments;
             Toast.makeText(activity, content, Toast.LENGTH_SHORT).show();
             result.success("success");
-
 
         } else if (methodCall.method.equals("openAir")) {
             Log.d("native", "openAir");
@@ -224,7 +230,7 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
 
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder iBinder) {
-                    //返回一个MsgService对象
+                    // 返回一个MsgService对象
                     mockService = ((MockBinder) iBinder).getService();
                     isReceive = true;
                     if (null != mockService) {
@@ -251,39 +257,53 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
             LeitaiMapActivity.Companion.start(activity, json);
             result.success("ok");
         } else if (methodCall.method.equals("mockLocation")) {
-//            String json = (String) methodCall.arguments;
-//            Log.d("pollex", "json = " + json);
+            // String json = (String) methodCall.arguments;
+            // Log.d("pollex", "json = " + json);
             SelectLocationMapActivity.Companion.start(activity, REQUEST_CODE_LOCATION);
             result.success("ok");
         } else if (methodCall.method.equals("openSelectAreaPage")) {
             // 选择扫描区域
-            SelectAreaMapActivity.Companion.start(activity, REQUEST_CODE_SELECT_AREA);
+            SelectScanningPointMapActivity.Companion.start(activity, REQUEST_CODE_SELECT_AREA);
+//            SelectAreaMapActivity.Companion.start(activity, REQUEST_CODE_SELECT_AREA);
             result.success("ok");
+        } else if (methodCall.method.equals("openQQ")) {
+            String qq = (String) methodCall.arguments;
+            String url = "mqqwpa://im/chat?chat_type=wpa&uin=" + qq;//uin是发送过去的qq号码
+            activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         }
     }
 
     private void processDeviceId(MethodChannel.Result result, boolean isFirst) {
-        //Android6.0需要动态获取权限
-        if (activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        // Android6.0需要动态获取权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             // 无权限
             if (isFirst) {
                 resultTemp = result;
-                activity.requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_PERMISSION);
+                activity.requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        REQUEST_CODE_PERMISSION);
             } else {
                 result.success(null);
                 resultTemp = null;
             }
         } else {
-            // 有权限
+            // 有权限 或者小于M
             TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(TELEPHONY_SERVICE);
             List<String> imeiList = new ArrayList<>();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (telephonyManager == null) {
+                result.success(null);
+                return;
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                String deviceId = Settings.System.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+                imeiList.add(deviceId);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 for (int slot = 0; slot < telephonyManager.getPhoneCount(); slot++) {
-                    String imei = telephonyManager.getDeviceId(slot);
+                    @SuppressLint("HardwareIds") String imei = telephonyManager.getDeviceId(slot);
                     imeiList.add(imei);
                 }
             } else {
-                String imei = telephonyManager.getDeviceId();
+                @SuppressLint("HardwareIds") String imei = telephonyManager.getDeviceId();
                 imeiList.add(imei);
             }
             Map<String, List<String>> params = new HashMap<>();

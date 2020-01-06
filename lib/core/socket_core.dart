@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:convert' as prefix0;
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -185,37 +184,37 @@ class GwgoSocketWrap {
   }
 
   _loopWriteData(data) {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (_isClose) {
-        try{
-          _timer.cancel();
-        }catch(e){
-          print(e.toString());
-        }
-        _timer = null;
-        return;
-      }
-      if (_request == null) {
-        _timer.cancel();
-        _timer = null;
-      }
-      count++;
-      print('循环请求: $count次');
-      if (count >= 3) {
-        dataHandler(null);
-        return;
-      }
-      if (getSocket() != null && getSocket().readyState == WebSocket.open) {
-        getSocket().add(data);
+    // _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    //   if (_isClose) {
+    //     try{
+    //       _timer.cancel();
+    //     }catch(e){
+    //       print(e.toString());
+    //     }
+    //     _timer = null;
+    //     return;
+    //   }
+    //   if (_request == null) {
+    //     _timer.cancel();
+    //     _timer = null;
+    //   }
+    //   count++;
+    //   print('循环请求: $count次');
+    //   if (count >= 3) {
+    //     dataHandler(null);
+    //     return;
+    //   }
+    if (getSocket() != null && getSocket().readyState == WebSocket.open) {
+      getSocket().add(data);
+    } else {
+      if (getSocket() == null) {
+        print('socket异常了,socket = null');
+        doneHandler();
       } else {
-        if (getSocket() == null) {
-          print('socket异常了,socket = null');
-          doneHandler();
-        } else {
-          print('socket异常了,socket = ${getSocket().readyState}');
-        }
+        print('socket异常了,socket = ${getSocket().readyState}');
       }
-    });
+    }
+    // });
   }
 
   /// 连接错误
@@ -243,10 +242,10 @@ class GwgoSocketWrap {
 
   // 收到数据
   // todo  处理接口返回 断开的情况
-  void dataHandler(data) {
+  Future<void> dataHandler(data) async {
     if (null == data) {
       // 接口超时时，data是null，触发空回调
-      _request.callback.onReceiveData(null);
+      await _request.callback.onReceiveData(null);
       return;
     } else {
       if (data.runtimeType == String) {
@@ -257,17 +256,10 @@ class GwgoSocketWrap {
           if (_request != null) {
             status = waitting;
           }
-          // if (_request != null) {
-          //   _handleRequest();
-          // }
         } else {
           print('未知的字符串$data');
         }
       } else {
-        // if (_timer != null) {
-        //   _timer.cancel();
-        // }
-
         if (_request == null) {
           return;
         }
@@ -282,7 +274,7 @@ class GwgoSocketWrap {
           print(exception);
         }
 
-        /// 替换掉不显示的���殊字符
+        /// 替换掉不显示的特殊字符
         result = result.replaceAll(String.fromCharCode(0x01), ' ');
         result = result.replaceAll(String.fromCharCode(0x02), ' ');
         result = result.replaceAll(String.fromCharCode(0x03), ' ');
@@ -330,15 +322,16 @@ class GwgoSocketWrap {
         if (_timer != null) {
           _timer.cancel();
         }
-
-        _request.callback.onReceiveData(resultMap);
+        await _request.callback.onReceiveData(resultMap);
       }
     }
     _request = null;
     _timer = null;
     status = ready;
     if (null != _gwgoCallback) {
-      _gwgoCallback();
+      Timer(Duration(milliseconds: 300), () {
+        _gwgoCallback();
+      });
     }
     // 当前request已处理完成
   }

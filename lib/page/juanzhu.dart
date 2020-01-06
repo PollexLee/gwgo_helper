@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gwgo_helper/manager/PackageInfoManager.dart';
+import 'package:gwgo_helper/ui/promise/promise.dart';
 import 'package:gwgo_helper/utils/common_utils.dart';
-import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../promise.dart';
 
 class JuanzhuPage extends StatefulWidget {
 

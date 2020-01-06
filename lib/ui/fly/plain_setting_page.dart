@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:gwgo_helper/config.dart';
 import 'package:gwgo_helper/utils/common_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import '../config.dart';
 
 /// 飞机设置页面
 class PlainSettingPage extends StatefulWidget {
@@ -23,9 +21,9 @@ class PlainSettingState extends State<PlainSettingPage> {
 
   Text getButtonText() {
     if (isFly) {
-      return Text('降落');
+      return Text('御剑飞行停止');
     } else {
-      return Text('起飞');
+      return Text('御剑飞行开始');
     }
   }
 
@@ -47,15 +45,14 @@ class PlainSettingState extends State<PlainSettingPage> {
     if (isFly) {
       // return Icon(Icons.visibility, size: 100, color: Colors.blue);
       return Text(
-        '飞行中',
+        '正在御剑飞行',
         style: TextStyle(fontSize: 40, color: Colors.blue),
       );
     } else {
       return Text(
-        '已降落',
+        '剑已归鞘',
         style: TextStyle(fontSize: 40, color: Colors.grey),
       );
-      // return Icon(Icons.visibility_off, size: 100, color: Colors.grey);
     }
   }
 
@@ -63,7 +60,7 @@ class PlainSettingState extends State<PlainSettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('飞行器'),
+        title: Text('御剑飞行'),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -113,19 +110,19 @@ class PlainSettingState extends State<PlainSettingPage> {
                   },
                 ),
               ),
-              Container(
-                padding: EdgeInsets.only(top: 10),
-                child: RaisedButton(
-                  child: Text('粘贴'),
-                  onPressed: () async {
-                    if (isFly) {
-                      toast('请先降落');
-                    }
-                    ClipboardData data = await Clipboard.getData('text/plain');
-                    _controller.text = data.text;
-                  },
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.only(top: 10),
+              //   child: RaisedButton(
+              //     child: Text('粘贴'),
+              //     onPressed: () async {
+              //       if (isFly) {
+              //         toast('请先降落');
+              //       }
+              //       ClipboardData data = await Clipboard.getData('text/plain');
+              //       _controller.text = data.text;
+              //     },
+              //   ),
+              // ),
               Container(
                 padding: EdgeInsets.only(top: 10),
                 child: RaisedButton(

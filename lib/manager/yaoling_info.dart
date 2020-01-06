@@ -59,7 +59,8 @@ class YaolingInfoManager implements Callback {
     // socketCore.close();
     // String filename = data['filename'];
     // sprite_f9e4d4876d5ac919bfc12b4a316d9d05.json
-    String filename = 'sprite_f9e4d4876d5ac919bfc12b4a316d9d05.json';
+    // 日期
+    String filename = 'sprite_8c805b2c6bbe4af4ad66931dc1a68f98.json';
     print('filename = $filename');
     Future<Response> response =
         dio.get('https://hy.gwgo.qq.com/sync/pet/config/$filename');

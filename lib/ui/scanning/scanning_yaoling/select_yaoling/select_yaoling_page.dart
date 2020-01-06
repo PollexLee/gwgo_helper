@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gwgo_helper/manager/yaoling_info.dart';
-import 'package:gwgo_helper/page/select_yaoling_drawer.dart';
-import '../sprite_ids.dart';
+import 'package:gwgo_helper/sprite_ids.dart';
+import 'package:gwgo_helper/ui/scanning/scanning_yaoling/select_yaoling/select_yaoling_drawer.dart';
 
 class SelectYaolingPage extends StatefulWidget {
   @override
@@ -20,6 +20,15 @@ class SelectYaolingState extends State<SelectYaolingPage> {
   var _searchLayoutBgColor = Colors.transparent;
   var _searchController = TextEditingController();
   var _searchText = '';
+
+  /// 当前选中级别的妖灵列表
+  List yaolingList1 = List();
+  List yaolingList2 = List();
+  List yaolingList3 = List();
+  List yaolingList4 = List();
+  List yaolingList5 = List();
+
+  List<Widget> widgetList = List();
 
   String getLevel() {
     var levelStr = '';
@@ -44,6 +53,43 @@ class SelectYaolingState extends State<SelectYaolingPage> {
   }
 
   @override
+  void initState() {
+    processData();
+    super.initState();
+  }
+
+  Future processData() async {
+    print('开始处理数据:' + DateTime.now().millisecondsSinceEpoch.toString());
+    if (YaolingInfoManager.yaolingMap == null ||
+        YaolingInfoManager.yaolingMap.isEmpty) {
+      print('YaolingInfoManager.yaolingMap is empty');
+    }
+    YaolingInfoManager.yaolingMap.forEach((id, yaoling) {
+      switch (yaoling.Level) {
+        case 1:
+          yaolingList1.add(yaoling);
+          break;
+        case 2:
+          yaolingList2.add(yaoling);
+          break;
+        case 3:
+          yaolingList3.add(yaoling);
+          break;
+        case 4:
+          yaolingList4.add(yaoling);
+          break;
+        case 5:
+          yaolingList5.add(yaoling);
+          break;
+        default:
+          break;
+      }
+    });
+    print('数据处理完成:' + DateTime.now().millisecondsSinceEpoch.toString());
+    _buildChildrenWidgets();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xf0ffffff),
@@ -51,7 +97,7 @@ class SelectYaolingState extends State<SelectYaolingPage> {
         groupValue,
         (level) {
           groupValue = level;
-          setState(() {});
+          _buildChildrenWidgets();
         },
       ),
       appBar: AppBar(
@@ -73,7 +119,7 @@ class SelectYaolingState extends State<SelectYaolingPage> {
                       alignment: WrapAlignment.start,
                       spacing: 6.0,
                       runSpacing: -6.0,
-                      children: _getAllYaolingWidgets(groupValue),
+                      children: widgetList,
                     ),
                   ],
                 ),
@@ -104,9 +150,8 @@ class SelectYaolingState extends State<SelectYaolingPage> {
                           ),
                           controller: _searchController,
                           onChanged: (content) {
-                            setState(() {
                               _searchText = content;
-                            });
+                            _buildChildrenWidgets();
                           },
                         ),
                       ),
@@ -136,14 +181,12 @@ class SelectYaolingState extends State<SelectYaolingPage> {
   }
 
   toggle() {
-    setState(() {
       isSearching = !isSearching;
       _searchLayoutWidth =
           isSearching ? MediaQuery.of(context).size.width - 30 : 0;
-      // _searchLayoutHeight = isSearching ? 55 : 0;
       _searchLayoutBgColor =
           isSearching ? Color(0xffffffff) : Colors.transparent;
-    });
+    _buildChildrenWidgets();
   }
 
   Widget _buildFloatingActionButton() {
@@ -158,32 +201,49 @@ class SelectYaolingState extends State<SelectYaolingPage> {
     );
   }
 
-  List<Widget> _getAllYaolingWidgets(String level) {
-    List<Widget> widgetList = List();
-    if (YaolingInfoManager.yaolingMap == null ||
-        YaolingInfoManager.yaolingMap.isEmpty) {
-      return widgetList;
+  _buildChildrenWidgets() {
+    buildChildrenWidgets(groupValue);
+  }
+
+  Future<List<Widget>> buildChildrenWidgets(String level) async {
+    print('开始构建widget:' + DateTime.now().millisecondsSinceEpoch.toString());
+    widgetList.clear();
+    List yaolingList;
+    switch (level) {
+      case '1':
+        yaolingList = yaolingList1;
+        break;
+      case '2':
+        yaolingList = yaolingList2;
+        break;
+      case '3':
+        yaolingList = yaolingList3;
+        break;
+      case '4':
+        yaolingList = yaolingList4;
+        break;
+      case '5':
+        yaolingList = yaolingList5;
+        break;
+      default:
+        break;
     }
-    if (YaolingInfoManager.yaolingMap.isEmpty) {
-      print('YaolingInfoManager.yaolingMap is empty');
-      return widgetList;
-    }
-    YaolingInfoManager.yaolingMap.forEach((id, yaoling) {
-      if (yaoling.Level.toString() == level) {
-        if (isSearching && yaoling.Name.contains(_searchText) || !isSearching) {
-          Widget _child =
-              getYaolingChip(yaoling.Id, yaoling.Name, yaoling.SmallImgPath);
-          Widget chip = GestureDetector(
-            onTap: () {
-              SpriteConfig.toggle(yaoling);
-              setState(() {});
-            },
-            child: _child,
-          );
-          widgetList.add(chip);
-        }
+    yaolingList.forEach((yaoling) {
+      if (isSearching && yaoling.Name.contains(_searchText) || !isSearching) {
+        Widget _child =
+            getYaolingChip(yaoling.Id, yaoling.Name, yaoling.SmallImgPath);
+        Widget chip = GestureDetector(
+          onTap: () {
+            SpriteConfig.toggle(yaoling);
+            _buildChildrenWidgets();
+          },
+          child: _child,
+        );
+        widgetList.add(chip);
+        setState(() {});
       }
     });
+    print('widget构建完成:' + DateTime.now().millisecondsSinceEpoch.toString());
     return widgetList;
   }
 
@@ -248,6 +308,6 @@ class SelectYaolingState extends State<SelectYaolingPage> {
   }
 
   bool isSelected(int id) {
-    return SpriteConfig.selectedMap.containsKey(id);
+    return SpriteConfig.selectedMap.contains(id);
   }
 }

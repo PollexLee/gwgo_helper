@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:gwgo_helper/config.dart';
 import 'package:gwgo_helper/manager/PackageInfoManager.dart';
 import 'package:gwgo_helper/model/deviceInfo.dart';
-
-import './utils/common_utils.dart';
-import './utils/dialog_utils.dart';
+import 'package:gwgo_helper/ui/promise/promise_model.dart';
+import 'package:gwgo_helper/utils/common_utils.dart';
+import 'package:gwgo_helper/utils/dialog_utils.dart';
 
 /// 用户授权单例
 class PromiseInstance {
@@ -21,6 +21,8 @@ class PromiseInstance {
   Map<String, int> currentMap = Map();
 
   Timer netTimeTimer;
+
+  PromiseModel promiseModel;
 
   factory PromiseInstance(BuildContext context) => _promiseInstance(context);
   static PromiseInstance _instance;
@@ -40,7 +42,6 @@ class PromiseInstance {
   init(BuildContext context) async {
     // 初始化版本信息
     PackageInfoManager.init();
-    // DialogUtils.showProgressDialog(context, '初始化中...');
     // 获取imei
     imeiList = await _getImeiList();
     if (imeiList == null || imeiList.isEmpty) {
@@ -170,7 +171,7 @@ class PromiseInstance {
       }
     }
 
-    // 有效期短语
+    // 有效期小于当前时间
     if (_deviceInfo.expireTime < netTime) {
       // 到期
       DialogUtils.showRegistDialog(context, imeiList[0], true);
@@ -185,6 +186,10 @@ class PromiseInstance {
     try {
       Map<String, dynamic> imeiMap = await getDeviceImei();
       List<dynamic> temp = imeiMap['imei'];
+      if(temp == null){
+        print('获取设备id，异常了,getDeviceImei() return null');
+        return List<String>(0);
+      }
       imeiList = temp.map<String>((item) {
         return item;
       }).toList();

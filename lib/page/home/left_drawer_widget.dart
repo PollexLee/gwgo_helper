@@ -3,11 +3,11 @@ import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gwgo_helper/ui/promise/promise.dart';
 import 'package:gwgo_helper/utils/common_utils.dart';
 import 'package:gwgo_helper/utils/dialog_utils.dart';
 
 import '../../config.dart';
-import '../../promise.dart';
 
 class DrawerLayout extends StatefulWidget {
   @override

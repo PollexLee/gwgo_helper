@@ -8,7 +8,6 @@ import '../sprite_ids.dart';
 import '../config.dart';
 import '../yaoling.dart';
 import 'location_manager.dart';
-import 'yaoling_info.dart';
 
 class YaolingManager implements Callback {
   WebSocketCore socketCore;
@@ -30,7 +29,7 @@ class YaolingManager implements Callback {
   init(Function initSuccess) {
     this.initSuccess = initSuccess;
     socketCore = WebSocketCore();
-    // init会初始化四个WebSocket
+    // init会初始化1个WebSocket
     socketCore.init(1, this.initSuccess);
   }
 
@@ -108,7 +107,7 @@ class YaolingManager implements Callback {
   onError(int code) {}
 
   @override
-  onReceiveData(Map<String, dynamic> resultMap) {
+  onReceiveData(Map<String, dynamic> resultMap) async {
     requestCount++;
     print('返回了$requestCount次数据');
     List<dynamic> spriteList = resultMap['sprite_list'];
@@ -120,32 +119,25 @@ class YaolingManager implements Callback {
     spriteList.forEach((sprite) {
       Map<String, dynamic> spriteMap = sprite;
       Yaoling yaoling = Yaoling.fromjson(spriteMap);
+
+      yaolingList.add(yaoling);
       // 筛选出稀有
       // 是否包含在选中类表
-      if (SpriteConfig.selectedMap.keys.contains(yaoling.sprite_id)) {
-        yaoling.name = SpriteConfig.selectedMap[yaoling.sprite_id];
-        yaolingList.add(yaoling);
-      }
-      // else if (!YaolingInfoManager.yaolingMap.keys
-      //     .contains(yaoling.sprite_id)) {
-      //   // 是否包含在配置列表中
-      //   if (yaoling.sprite_id != 2004041) {
-      //     yaoling.name = yaoling.sprite_id.toString();
-      //     yaolingList.add(yaoling);
-      //   }
+      // if (SpriteConfig.selectedMap.contains(yaoling.sprite_id)) {
+      //   yaolingList.add(yaoling);
       // }
     });
 
     if (null != callback) {
       if (requestCount == id) {
-        callback(yaolingList, '扫描完成');
+        await callback(yaolingList, '扫描完成，共扫描$id块区域');
       } else {
-        callback(yaolingList, '扫描了$requestCount块/共$id块区域');
+        await callback(yaolingList, '扫描了$requestCount块/共$id块区域');
       }
     }
 
     if (requestCount == id) {
-      close();
+      // close();
     }
   }
 }

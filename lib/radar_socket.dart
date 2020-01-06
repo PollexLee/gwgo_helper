@@ -8,7 +8,6 @@ import 'dart:typed_data';
 import 'package:gwgo_helper/yaoling.dart';
 
 import 'model/leitai.dart';
-import 'sprite_ids.dart';
 
 /// ,  ,
 
@@ -237,10 +236,8 @@ class RadarSocket {
           Map<String, dynamic> spriteMap = sprite;
           Yaoling yaoling = Yaoling.fromjson(spriteMap);
           // 筛选出稀有
-          if (SpriteConfig.spriteMap.keys.contains(yaoling.sprite_id)) {
-            yaoling.name = SpriteConfig.spriteMap[yaoling.sprite_id];
+
             yaolingList.add(yaoling);
-          }
 
           // 对比出经纬度最大和最小
           if (minLat > yaoling.latitude) {
@@ -266,7 +263,7 @@ class RadarSocket {
 
       if (!isPause) {
         // 没有暂停，继续扫描
-        // 计算���一次扫描经度，维度不变
+        // 计算下一次扫描经度，维度不变
         var nextLat = lastLat;
         var nextLon = lastLon + (maxLon - minLon) + 1;
         if (nextLat >= MIN_LAT &&

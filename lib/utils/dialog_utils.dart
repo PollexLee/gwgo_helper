@@ -203,3 +203,59 @@ class DialogUtils {
         });
   }
 }
+
+bool _isShowProgressDialog = false;
+
+Future showProgressDialog(BuildContext context,
+    {bool barrierDismissible = true, String msg}) {
+      if(_isShowProgressDialog){
+        return null;
+      }
+  _isShowProgressDialog = true;
+  Future f = showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Center(
+        child: Container(
+          padding: EdgeInsets.all(30),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+            color: Colors.black87,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                msg ?? '加载中...',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  decoration: TextDecoration.none,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+    barrierDismissible: barrierDismissible,
+  );
+
+  f.then((data) {
+    _isShowProgressDialog = false;
+  });
+  return f;
+}
+
+dismissProgressDialog(BuildContext context) {
+  if (_isShowProgressDialog) {
+    Navigator.pop(context);
+  }
+}

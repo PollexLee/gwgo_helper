@@ -5,10 +5,10 @@ import 'package:gwgo_helper/manager/yaoling_manager.dart';
 import 'package:gwgo_helper/page/help.dart';
 import 'package:gwgo_helper/page/indicator.dart';
 import 'package:gwgo_helper/page/juanzhu.dart';
-import 'package:gwgo_helper/page/plain_setting_page.dart';
-import 'package:gwgo_helper/page/select_yaoling_page.dart';
+import 'package:gwgo_helper/ui/fly/plain_setting_page.dart';
+import 'package:gwgo_helper/ui/home/new_home.dart';
+import 'package:gwgo_helper/ui/scanning/scanning_yaoling/select_yaoling/select_yaoling_page.dart';
 import 'package:gwgo_helper/widget/yaoling_widget.dart';
-import 'home.dart';
 import 'manager/yaoling_info.dart';
 import 'yaoling.dart';
 import 'sprite_ids.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: NewHomePage(),
       routes: {
         '/yaoling': (context) => MyHomePage(title: '稀有'),
         '/juanzhu': (context) => JuanzhuPage(),
@@ -60,7 +60,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final GlobalKey<ScaffoldState> key = GlobalKey();
   var buttonText = '扫描中';
   List<Yaoling> yaolingData = List();
   YaolingManager manager;
@@ -102,9 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
         if (yaolingData.length > 200) {
           if (!isNotice) {
             isNotice = true;
-            key.currentState.showSnackBar(SnackBar(
-              content: Text('妖灵数量已大于200，不再添加'),
-            ));
+            // key.currentState.showSnackBar(SnackBar(
+            //   content: Text('妖灵数量已大于200，不再添加'),
+            // ));
           }
           return;
         }
@@ -134,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: key,
+      // key: key,
       appBar: AppBar(
         title: Text(widget.title +
             ' - ' +

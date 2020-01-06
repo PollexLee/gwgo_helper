@@ -9,7 +9,6 @@ class PlatformWidget extends StatelessWidget {
   Function onTap;
   PlatformWidget(Leitai leitai, {this.onTap}) {
     this._leitai = leitai;
-    SpriteConfig.initAllMap();
   }
 
   // @override

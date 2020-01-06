@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gwgo_helper/promise.dart';
-import 'package:gwgo_helper/utils/common_utils.dart';
+import 'package:gwgo_helper/ui/promise/promise.dart';
 import 'package:gwgo_helper/utils/dialog_utils.dart';
 import 'package:gwgo_helper/yaoling.dart';
-import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'model/location.dart';

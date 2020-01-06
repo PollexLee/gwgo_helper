@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gwgo_helper/config.dart';
 import 'package:gwgo_helper/page/home/left_drawer_widget.dart';
-import 'package:gwgo_helper/utils/common_utils.dart';
-import 'page/leitai_page.dart';
-import 'promise.dart';
-import 'config.dart';
+import 'package:gwgo_helper/page/leitai_page.dart';
+import 'package:gwgo_helper/ui/promise/promise.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -33,9 +32,7 @@ class HomePageState extends State<HomePage> {
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController powerController = new TextEditingController();
-
   TextEditingController tokenController = new TextEditingController();
-  TextEditingController openidController = new TextEditingController();
 
   var _searchName = "";
   var _searchPower = "";
@@ -83,77 +80,72 @@ class HomePageState extends State<HomePage> {
               },
             ),
           ),
-          Container(
-            height: 50,
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(right: 15),
-            child: IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return StatefulBuilder(
-                      builder: (context, state) {
-                        return AlertDialog(
-                          title: Text('输入token和openid'),
-                          content: Container(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                TextField(
-                                  controller: tokenController,
-                                  decoration:
-                                      InputDecoration(hintText: 'token'),
-                                  onChanged: (text) {
-                                    state(() {
-                                      _token = text;
-                                    });
-                                  },
-                                ),
-                                TextField(
-                                  controller: openidController,
-                                  decoration:
-                                      InputDecoration(hintText: 'openid'),
-                                  onChanged: (text) {
-                                    state(() {
-                                      _openid = text;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          actions: <Widget>[
-                            FlatButton(
-                              child: Text('取消'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            FlatButton(
-                              child: Text('更新'),
-                              onPressed: (_token == '' || _openid == '')
-                                  ? null
-                                  : () {
-                                      token = tokenController.text;
-                                      openid = openidController.text;
-                                      toast('更新成功');
-                                      Navigator.pop(context);
-                                    },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+          // Container(
+          //   height: 50,
+          //   alignment: Alignment.center,
+          //   margin: EdgeInsets.only(right: 15),
+          //   child: IconButton(
+          //     icon: Icon(
+          //       Icons.settings,
+          //       color: Colors.white,
+          //     ),
+          //     onPressed: () {
+          //       showDialog(
+          //         context: context,
+          //         builder: (context) {
+          //           return StatefulBuilder(
+          //             builder: (context, state) {
+          //               return AlertDialog(
+          //                 title: Text('输入抓包信息'),
+          //                 content: Container(
+          //                   child: Column(
+          //                     mainAxisSize: MainAxisSize.min,
+          //                     children: <Widget>[
+          //                       TextField(
+          //                         controller: tokenController,
+          //                         maxLines: 5,
+          //                         decoration: InputDecoration(
+          //                           hintText: '抓包信息',
+          //                           border: OutlineInputBorder(),
+          //                         ),
+          //                         onChanged: (text) {
+          //                           state(() {
+          //                             _token = text;
+          //                           });
+          //                         },
+          //                       ),
+          //                     ],
+          //                   ),
+          //                 ),
+          //                 actions: <Widget>[
+          //                   FlatButton(
+          //                     child: Text(
+          //                       '取消',
+          //                       style: TextStyle(color: Colors.red),
+          //                     ),
+          //                     onPressed: () {
+          //                       Navigator.pop(context);
+          //                     },
+          //                   ),
+          //                   FlatButton(
+          //                     child: Text('更新'),
+          //                     onPressed: (_token == '')
+          //                         ? null
+          //                         : () {
+          //                             token = tokenController.text;
+          //                             toast('更新成功');
+          //                             Navigator.pop(context);
+          //                           },
+          //                   ),
+          //                 ],
+          //               );
+          //             },
+          //           );
+          //         },
+          //       );
+          //     },
+          //   ),
+          // ),
         ],
       ),
       body: SingleChildScrollView(
@@ -181,13 +173,13 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildItem(int index) {
-    return GestureDetector(
-      onTap: () {
-        _onTap(index);
-      },
-      child: Card(
-        elevation: 8.0,
-        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      child: InkWell(
+        onTap: () {
+          _onTap(index);
+        },
+        borderRadius: BorderRadius.all(Radius.circular(4)),
         child: Container(
           child: ListTile(
               contentPadding:

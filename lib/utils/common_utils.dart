@@ -22,7 +22,7 @@ startSelectLocation(Function listener) {
   mackLocation();
 }
 
-setSelectArea(Function listener){
+setSelectArea(Function listener) {
   jumpPlugin.setMethodCallHandler((MethodCall call) async {
     assert(call.method == 'setArea');
     listener(call.arguments.toString());
@@ -199,4 +199,8 @@ String generateMd5(String data) {
 
 dynamic openSelectAreaPage() async {
   await jumpPlugin.invokeMethod('openSelectAreaPage');
+}
+
+dynamic openQQ (String qq) async {
+await jumpPlugin.invokeMethod('openQQ', qq);
 }

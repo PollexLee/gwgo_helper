@@ -73,6 +73,8 @@
         <activity android:name=".map.SelectAreaMapActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LaunchTheme"/>
+        <activity android:name=".map.SelectScanningPointMapActivity"
+            android:theme="@style/LaunchTheme"/>
 
         <service
             android:name=".MockService"
