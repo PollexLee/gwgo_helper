@@ -35,6 +35,8 @@ class PromiseViewModel extends ViewStateModel {
 
   /// 确认购买按钮
   void onByClick() {
+    Toast.show('开发中...', context);
+    return;
     showProgressDialog(context);
 
     /// 请求服务的二维码接口 返回二维码地址和失效时间，

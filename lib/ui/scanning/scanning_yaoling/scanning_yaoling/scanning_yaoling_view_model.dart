@@ -2,12 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gwgo_helper/config.dart';
+import 'package:gwgo_helper/manager/token_manager.dart';
 import 'package:gwgo_helper/manager/yaoling_manager.dart';
+import 'package:gwgo_helper/model/token_model.dart';
 import 'package:gwgo_helper/provider/view_state_model.dart';
 import 'package:gwgo_helper/ui/scanning/scanning_yaoling/select_yaoling/select_yaoling_page.dart';
 import 'package:gwgo_helper/utils/common_utils.dart';
 import 'package:gwgo_helper/utils/dialog_utils.dart';
 import 'package:gwgo_helper/yaoling.dart';
+import 'package:toast/toast.dart';
 
 class ScanningYaolingViewModel extends ViewStateModel {
   YaolingManager manager;
@@ -46,29 +49,45 @@ class ScanningYaolingViewModel extends ViewStateModel {
     if (null != manager) {
       manager.close();
     }
+    // 页面关闭是，如果还在扫描，就释放token
+    if (scanning) {
+      scanning = false;
+      TokenManager.releaseToken(token);
+    }
   }
 
-  void scanningYaoling()async {
+  void scanningYaoling() async {
     // 扫描之前，先请求token
-    showProgressDialog(context, msg: '请求配置中...');
-    var dio = Dio();
-    dio.options.headers.addAll({'Content-Type': 'application/json'});
-    dio.options.receiveTimeout = 60000;
+    showProgressDialog(context, msg: '请求配置中...', barrierDismissible: false);
     try {
-      // 从服务端获取token，可以延迟
-      Response response = await dio
-          .get('http://gwgo.pollex.me:8848/getAuth?imei=${imeiList[0]}');
-
+      TokenModel tokenModel = await TokenManager.getTokenForYaoling();
+      if (tokenModel.code == '-1') {
+        Toast.show('暂时没有可用的配置，请20秒后重试', context, duration: 3);
+        dismissProgressDialog(context);
+        return;
+      } else {
+        tokenModel.publish();
+        print('更新token成功, token = ${tokenModel.token}');
+      }
     } catch (e) {
-      print(e);
+      Toast.show('网络异常，稍后重试', context, duration: 1);
+      dismissProgressDialog(context);
+      print('网络异常，稍后重试');
+      return;
     }
     dismissProgressDialog(context);
+    Toast.show('开始扫描', context);
     scanning = true;
     allData.clear();
     notifyListeners();
     manager.refreshYaoling((List<Yaoling> data, String process) {
       processString = process;
-      if (process == "扫描完成") {}
+      if (process.contains("扫描完成")) {
+        // 释放token
+        TokenManager.releaseToken(token);
+        token = "";
+        openid = "";
+      }
       if (data == null) {
       } else if (data.isNotEmpty) {
         // 添加到数据中

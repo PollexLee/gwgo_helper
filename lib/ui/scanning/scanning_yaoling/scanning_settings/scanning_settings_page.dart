@@ -104,7 +104,37 @@ class ScanningSettingsState extends State<ScanningSettingsPage> {
                       ),
                     ),
                   ),
-                  secondChild: Container(),
+                  secondChild: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                            '游戏启动',
+                            style: Theme.of(context).textTheme.title,
+                          ),
+                            RadioListTile(
+                            value: 0,
+                            groupValue: model.startGame,
+                            onChanged: model.onStartGameChanged,
+                            title: Text('自动进入游戏'),
+                            subtitle: Text('瞬移模式和导航模式中，点击扫描到的妖灵头像，自动进入游戏。'),
+                          ),
+                          RadioListTile(
+                            value: 1,
+                            groupValue: model.startGame,
+                            onChanged: model.onStartGameChanged,
+                            title: Text('不自动进入游戏'),
+                            subtitle: Text('不自动进入游戏，需要用户手动切换到游戏。'),
+                          ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

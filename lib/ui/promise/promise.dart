@@ -115,8 +115,8 @@ class PromiseInstance {
         deviceInfo.expireTime = 1570377600000;
       }
       // 取出token字段
-      token = deviceInfo.token;
-      openid = deviceInfo.openid;
+      // token = deviceInfo.token;
+      // openid = deviceInfo.openid;
 
       return deviceInfo;
     } catch (e) {
