@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gwgo_helper/provider/provider_widget.dart';
-import 'package:gwgo_helper/ui/promise/promise.dart';
 import 'package:gwgo_helper/ui/promise/promise_view_model.dart';
 
 class PromisePage extends StatefulWidget {

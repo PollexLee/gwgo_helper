@@ -33,7 +33,7 @@
         android:name="io.flutter.app.FlutterApplication"
         android:debuggable="true"
         android:icon="@mipmap/indicator_icon"
-        android:label="飞行指示器"
+        android:label="却邪剑"
         tools:ignore="GoogleAppIndexingWarning">
         <!--<meta-data-->
         <!--android:name="TencentMapSDK"-->

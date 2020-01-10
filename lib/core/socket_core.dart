@@ -3,7 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:gwgo_helper/config.dart';
 import 'package:gwgo_helper/core/websocket_callback.dart';
+import 'package:gwgo_helper/manager/token_manager.dart';
+import 'package:gwgo_helper/utils/common_utils.dart';
+import 'package:toast/toast.dart';
 
 /// 用来建立WebSocket连接的地址
 String URL =
@@ -272,6 +276,15 @@ class GwgoSocketWrap {
           result = decoder.convert(list.sublist(4));
         } catch (exception) {
           print(exception);
+        }
+
+        if (result.contains('retcode":10004')) {
+          // token失效，删除此token
+          print('token失效了，删除$token');
+          toast('配置失效，请重新获取');
+          TokenManager.deleteToken(token);
+          close();
+          return;
         }
 
         /// 替换掉不显示的特殊字符

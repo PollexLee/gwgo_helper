@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,12 +29,17 @@ class ScanningYaolingViewModel extends ViewStateModel {
   String processString = '';
 
   bool scanning = false;
+  // 扫描按钮倒计时
+  int delayTime = 10;
 
   ScanningYaolingViewModel(BuildContext context) {
     this.context = context;
   }
 
   Future init() async {
+    // 将扫描模式默认为 我的周围
+    selectedLocation = locationList[1];
+    saveLocationRange();
     manager = YaolingManager();
     manager.init((int status) {
       if (status == 0 && !isCreate) {
@@ -57,13 +64,18 @@ class ScanningYaolingViewModel extends ViewStateModel {
   }
 
   void scanningYaoling() async {
+    if(startList[1].latitude == -1){
+      Toast.show('请先选择扫描位置', context);
+      return;
+    }
     // 扫描之前，先请求token
     showProgressDialog(context, msg: '请求配置中...', barrierDismissible: false);
     try {
       TokenModel tokenModel = await TokenManager.getTokenForYaoling();
       if (tokenModel.code == '-1') {
-        Toast.show('暂时没有可用的配置，请20秒后重试', context, duration: 3);
+        Toast.show('暂时没有可用的配置，请10秒后重试', context, duration: 2);
         dismissProgressDialog(context);
+        startDelay();
         return;
       } else {
         tokenModel.publish();
@@ -116,8 +128,6 @@ class ScanningYaolingViewModel extends ViewStateModel {
   }
 
   void openSelectPosition() {
-    selectedLocation = locationList[1];
-    saveLocationRange();
     setSelectArea((String data) {
       if (null == data || data.isEmpty) {
         toast('没有选择有效的自定义区域');
@@ -126,6 +136,24 @@ class ScanningYaolingViewModel extends ViewStateModel {
       toast('选择扫描区域成功');
       saveSelectArea(data);
       parseArea(data);
+      notifyListeners();
     });
+  }
+
+  void startDelay() {
+    delayTime--;
+    notifyListeners();
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      delayTime--;
+      if (delayTime == 0) {
+        delayTime = 10;
+        timer.cancel();
+      }
+      notifyListeners();
+    });
+  }
+
+  String getDelayTime() {
+    return delayTime == 10 ? "" : '（${delayTime.toString()}）';
   }
 }

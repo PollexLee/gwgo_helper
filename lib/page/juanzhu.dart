@@ -6,7 +6,6 @@ import 'package:gwgo_helper/utils/common_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JuanzhuPage extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return JuanzhuState();
@@ -14,17 +13,16 @@ class JuanzhuPage extends StatefulWidget {
 }
 
 class JuanzhuState extends State<JuanzhuPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('关于飞行指示器')),
+      appBar: AppBar(title: Text('关于『却邪剑』')),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: Column(
           children: <Widget>[
             Text(
-                '版本号 ${PackageInfoManager.packageVersion} \n\n价格：15元30天。\n\n付费流程：\n 1.复制设备ID；\n2.点击二维码下载，用支付宝或微信付款，将设备ID粘贴到付款备注中，付款三分钟后，重启指示器即可。\n\n 有问题请咨询开发QQ群：162411670'),
+                '版本号 ${PackageInfoManager.packageVersion} \n\n令牌价格：20元30天。\n\n付费流程：\n 1.点击复制设备ID；\n2.点击支付宝二维码下载，用支付宝扫码付款，将设备ID粘贴到付款备注中，付款三分钟后，重启指示器即可。\n\n 有问题请联系炼器师QQ或加群。'),
             Padding(
               padding: EdgeInsets.only(top: 10),
               child: RaisedButton(
@@ -60,9 +58,23 @@ class JuanzhuState extends State<JuanzhuPage> {
                   borderRadius: BorderRadius.all(Radius.circular(10))),
             ),
             RaisedButton(
-              onPressed: openWeChatQR,
+              onPressed: () {
+                openQQ('3234991420');
+              },
               child: Text(
-                '微信二维码下载',
+                '联系炼器师QQ',
+                style: TextStyle(fontSize: 14, color: Colors.white),
+              ),
+              color: Colors.blue,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+            ),
+            RaisedButton(
+              onPressed: () {
+                openQQGroup();
+              },
+              child: Text(
+                '加入令牌售后群',
                 style: TextStyle(fontSize: 14, color: Colors.white),
               ),
               color: Colors.blue,
@@ -80,6 +92,6 @@ class JuanzhuState extends State<JuanzhuPage> {
   }
 
   void openAliPayQR() {
-    launch('https://i.loli.net/2019/08/19/YZWCtfVeDz7qsad.jpg');
+    launch('https://i.loli.net/2020/01/09/GW7zLd5N6MQkyqB.png');
   }
 }

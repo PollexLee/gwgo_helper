@@ -50,7 +50,7 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
       drawer: DrawerLayout(),
       appBar: AppBar(
-        title: Text('飞行指示器'),
+        title: Text('却邪剑'),
         actions: <Widget>[
           Container(
             height: 50,

@@ -270,6 +270,17 @@ class GwgoIntentHelper implements MethodChannel.MethodCallHandler {
             String qq = (String) methodCall.arguments;
             String url = "mqqwpa://im/chat?chat_type=wpa&uin=" + qq;//uin是发送过去的qq号码
             activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        } else if (methodCall.method.equals("openQQGroup")) {
+            Intent intent = new Intent();
+            intent.setData(Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3Dzvb4H6VbIIwN1qnEEl-sW688fdIlvCin"));
+            // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            try {
+                activity.startActivity(intent);
+            } catch (Exception e) {
+                // 未安装手Q或安装的版本不支持
+                Toast.makeText(activity, "未安装手Q或安装的版本不支持", Toast.LENGTH_SHORT).show();
+            }
+            result.success("ok");
         }
     }
 

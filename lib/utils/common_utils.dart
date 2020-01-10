@@ -201,6 +201,10 @@ dynamic openSelectAreaPage() async {
   await jumpPlugin.invokeMethod('openSelectAreaPage');
 }
 
-dynamic openQQ (String qq) async {
-await jumpPlugin.invokeMethod('openQQ', qq);
+dynamic openQQ(String qq) async {
+  await jumpPlugin.invokeMethod('openQQ', qq);
+}
+
+dynamic openQQGroup() async {
+  await jumpPlugin.invokeMethod('openQQGroup');
 }

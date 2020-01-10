@@ -7,8 +7,10 @@ import 'package:gwgo_helper/page/indicator.dart';
 import 'package:gwgo_helper/page/juanzhu.dart';
 import 'package:gwgo_helper/ui/fly/plain_setting_page.dart';
 import 'package:gwgo_helper/ui/home/new_home.dart';
+import 'package:gwgo_helper/ui/promise/promise.dart';
 import 'package:gwgo_helper/ui/scanning/scanning_yaoling/select_yaoling/select_yaoling_page.dart';
 import 'package:gwgo_helper/widget/yaoling_widget.dart';
+import 'package:provider/provider.dart';
 import 'manager/yaoling_info.dart';
 import 'yaoling.dart';
 import 'sprite_ids.dart';
@@ -24,27 +26,29 @@ class MyApp extends StatelessWidget {
     YaolingInfoManager().init();
     // 初始化妖灵配置
     SpriteConfig.init();
-    
+
     try {
       Config.init(context);
     } catch (exception) {
       print(exception);
     }
-
-    return MaterialApp(
-      title: '飞行指示器',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [ChangeNotifierProvider.value(value: UserInfoProvider())],
+      child: MaterialApp(
+        title: '却邪剑',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: NewHomePage(),
+        routes: {
+          '/yaoling': (context) => MyHomePage(title: '稀有'),
+          '/juanzhu': (context) => JuanzhuPage(),
+          '/selectYaoling': (context) => SelectYaolingPage(),
+          '/plainSetting': (context) => PlainSettingPage(),
+          '/indicator': (context) => IndicatorPage(),
+          '/help': (context) => HelpPage(),
+        },
       ),
-      home: NewHomePage(),
-      routes: {
-        '/yaoling': (context) => MyHomePage(title: '稀有'),
-        '/juanzhu': (context) => JuanzhuPage(),
-        '/selectYaoling': (context) => SelectYaolingPage(),
-        '/plainSetting': (context) => PlainSettingPage(),
-        '/indicator': (context) => IndicatorPage(),
-        '/help': (context) => HelpPage(),
-      },
     );
   }
 }

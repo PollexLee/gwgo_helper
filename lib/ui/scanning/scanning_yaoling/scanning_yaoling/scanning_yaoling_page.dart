@@ -52,7 +52,10 @@ class ScanningYaolingState extends State<ScanningYaolingPage> {
                   tooltip: '选择妖灵',
                 ),
                 IconButton(
-                  icon: Icon(Icons.map),
+                  icon: Icon(Icons.map,
+                      color: startList[1].latitude == -1
+                          ? Colors.red
+                          : Colors.white),
                   onPressed: () {
                     model.openSelectPosition();
                   },
@@ -74,10 +77,12 @@ class ScanningYaolingState extends State<ScanningYaolingPage> {
             body: !model.scanning
                 ? Center(
                     child: RaisedButton(
-                      onPressed: () {
-                        model.scanningYaoling();
-                      },
-                      child: Text('释放剑气，开始扫描'),
+                      onPressed: model.delayTime == 10
+                          ? () {
+                              model.scanningYaoling();
+                            }
+                          : null,
+                      child: Text('释放剑气，开始探测 ${model.getDelayTime()}'),
                     ),
                   )
                 : SingleChildScrollView(
@@ -92,7 +97,7 @@ class ScanningYaolingState extends State<ScanningYaolingPage> {
                         ),
                         RaisedButton(
                           child: Text('重新扫描'),
-                          onPressed: (){
+                          onPressed: () {
                             model.scanningYaoling();
                           },
                         ),

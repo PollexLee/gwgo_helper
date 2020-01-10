@@ -8,6 +8,7 @@ import 'package:gwgo_helper/model/deviceInfo.dart';
 import 'package:gwgo_helper/ui/promise/promise_model.dart';
 import 'package:gwgo_helper/utils/common_utils.dart';
 import 'package:gwgo_helper/utils/dialog_utils.dart';
+import 'package:provider/provider.dart';
 
 /// 用户授权单例
 class PromiseInstance {
@@ -58,6 +59,8 @@ class PromiseInstance {
       return;
     }
 
+    Provider.of<UserInfoProvider>(context).setDeviceInfo(_deviceInfo);
+
     // _deviceInfo.version = '2.1.5|修复bug|1';
     // 根据版本信息做出提示
     if (null != _deviceInfo.version && _deviceInfo.version.isNotEmpty) {
@@ -87,11 +90,7 @@ class PromiseInstance {
       DialogUtils.showNetworkErrorDialog(context);
       return;
     }
-
-    // 获取我的注册时间
-    // myRegisteTime = _getMyRegisteTime();
-
-    // filterMyDeviceInfo(context);
+    Provider.of<UserInfoProvider>(context).setNetTime(netTime);
   }
 
   /// 从网络获取设备信息
@@ -186,7 +185,7 @@ class PromiseInstance {
     try {
       Map<String, dynamic> imeiMap = await getDeviceImei();
       List<dynamic> temp = imeiMap['imei'];
-      if(temp == null){
+      if (temp == null) {
         print('获取设备id，异常了,getDeviceImei() return null');
         return List<String>(0);
       }
@@ -250,5 +249,39 @@ class PromiseInstance {
       var format = DateTime.fromMillisecondsSinceEpoch(_deviceInfo.expireTime);
       return '到期时间：${format.year}-${format.month}-${format.day} ${format.hour}:${format.minute}';
     }
+  }
+}
+
+class UserInfoProvider with ChangeNotifier {
+  DeviceInfo _deviceInfo;
+  int _netTime;
+
+  int get netTime => _netTime;
+
+  DeviceInfo get deviceInfo => _deviceInfo;
+
+  String get invalidTime {
+    if (_deviceInfo == null) {
+      return '设备未注册';
+    }
+    if (netTime == null || netTime <= 0) {
+      return '网络异常，请联网后重启';
+    }
+    if (_deviceInfo.expireTime < netTime) {
+      return '注册已过期';
+    } else {
+      var format = DateTime.fromMillisecondsSinceEpoch(_deviceInfo.expireTime);
+      return '到期时间：${format.year}-${format.month}-${format.day} ${format.hour}:${format.minute}';
+    }
+  }
+
+  setNetTime(int time) {
+    _netTime = time;
+    notifyListeners();
+  }
+
+  setDeviceInfo(DeviceInfo info) {
+    _deviceInfo = info;
+    notifyListeners();
   }
 }

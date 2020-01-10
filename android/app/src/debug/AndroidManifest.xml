@@ -19,7 +19,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="飞行指示器"
+        android:label="却邪剑"
         android:icon="@mipmap/indicator_icon"
         tools:ignore="GoogleAppIndexingWarning"
         android:debuggable="true">

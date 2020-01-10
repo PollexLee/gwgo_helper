@@ -56,7 +56,7 @@ class DialogUtils {
         builder: (context) {
           return AlertDialog(
             title: Text('提示'),
-            content: Text('网络异常，请联网后再启动飞行指示器'),
+            content: Text('网络异常，请联网后再启动却邪剑'),
             actions: <Widget>[
               RaisedButton(
                 child: Text(

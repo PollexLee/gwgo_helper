@@ -5,20 +5,19 @@ import 'package:gwgo_helper/provider/provider_widget.dart';
 import 'package:gwgo_helper/ui/home/home_view_model.dart';
 import 'package:gwgo_helper/ui/promise/promise.dart';
 import 'package:gwgo_helper/utils/common_utils.dart';
+import 'package:provider/provider.dart';
 
 class NewHomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    
     return NewHomeState();
   }
 }
 
 class NewHomeState extends State<NewHomePage> {
-
-@override
+  @override
   void initState() {
-       /// 第一次启动，自动跳转到使用说明
+    /// 第一次启动，自动跳转到使用说明
     Config.init(context);
     // 初始化授权相关
     PromiseInstance(context);
@@ -28,7 +27,6 @@ class NewHomeState extends State<NewHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return ProviderWidget<HomeViewModel>(
       viewModel: HomeViewModel(context),
       onReady: (model) async {
@@ -37,7 +35,33 @@ class NewHomeState extends State<NewHomePage> {
       builder: (context, viewmodel, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(Strings.appName),
+            title: Consumer(
+              builder: (context, UserInfoProvider provider, _) {
+                return RichText(
+                  text: TextSpan(children: <TextSpan>[
+                    TextSpan(
+                      text: Strings.appName,
+                      style: Theme.of(context)
+                          .textTheme
+                          .title
+                          .copyWith(color: Colors.white),
+                    ),
+                    TextSpan(
+                        text: '  ' + provider.invalidTime,
+                        style: provider.invalidTime.contains('到期时间')
+                            ? null
+                            : TextStyle(color: Colors.red)),
+                  ]),
+                );
+              },
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.help),
+                onPressed: viewmodel.onIndicator,
+                tooltip: '使用说明',
+              )
+            ],
           ),
           body: _buildBody(viewmodel),
         );

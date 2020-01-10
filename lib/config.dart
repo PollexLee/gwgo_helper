@@ -141,7 +141,7 @@ setLocation(String locationStr) async {
 }
 
 // 选中的位置
-String selectedLocation = locationList[0];
+String selectedLocation = locationList[1];
 
 setStartAir(bool open) async {
   isStartAir = open;
@@ -212,7 +212,7 @@ class Config {
     // 初始化 已选择妖灵
     selectedLocation = pref.getString(locationKey);
     if (null == selectedLocation) {
-      selectedLocation = locationList[0];
+      selectedLocation = locationList[1];
     }
     // 初始化 自动启动游戏
     isStartAir = pref.getBool(startAirKey);

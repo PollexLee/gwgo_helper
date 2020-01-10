@@ -130,9 +130,9 @@ class YaolingManager implements Callback {
 
     if (null != callback) {
       if (requestCount == id) {
-        await callback(yaolingList, '扫描完成，共扫描$id块区域');
+        await callback(yaolingList, '探测完成，共探测$id块区域');
       } else {
-        await callback(yaolingList, '扫描了$requestCount块/共$id块区域');
+        await callback(yaolingList, '探测了$requestCount块/共$id块区域');
       }
     }
 
