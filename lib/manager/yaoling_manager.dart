@@ -108,6 +108,10 @@ class YaolingManager implements Callback {
 
   @override
   onReceiveData(Map<String, dynamic> resultMap) async {
+    if (null == resultMap) {
+      await callback(null, '异常');
+      return;
+    }
     requestCount++;
     print('返回了$requestCount次数据');
     List<dynamic> spriteList = resultMap['sprite_list'];

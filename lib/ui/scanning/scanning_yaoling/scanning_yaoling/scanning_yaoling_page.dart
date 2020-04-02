@@ -76,13 +76,27 @@ class ScanningYaolingState extends State<ScanningYaolingPage> {
             ),
             body: !model.scanning
                 ? Center(
-                    child: RaisedButton(
-                      onPressed: model.delayTime == 10
-                          ? () {
-                              model.scanningYaoling();
-                            }
-                          : null,
-                      child: Text('释放剑气，开始探测 ${model.getDelayTime()}'),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        RaisedButton(
+                          onPressed: model.delayTime == 10
+                              ? () {
+                                  model.scanningYaoling();
+                                }
+                              : null,
+                          child: Text('释放剑气，开始探测 ${model.getDelayTime()}'),
+                        ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        RaisedButton(
+                          onPressed: (){
+                            openQQ('3234991420');
+                          },
+                          child: Text('联系炼器师补足剑气'),
+                        ),
+                      ],
                     ),
                   )
                 : SingleChildScrollView(

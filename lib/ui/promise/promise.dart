@@ -70,13 +70,20 @@ class PromiseInstance {
         var msg = versionArray[1];
         var force = versionArray[2];
 
-        if (version != PackageInfoManager.packageVersion) {
+        var currentVersion = PackageInfoManager.packageVersion;
+        if (currentVersion.contains('test')) {
           DialogUtils.hideProgressDialog();
-          DialogUtils.showUpdateDialog(context, version, msg, true);
-          return;
+          DialogUtils.showNotificationDialog(context, '此包为测试包，无法自动更新。');
         } else {
-          DialogUtils.hideProgressDialog();
-          DialogUtils.showNotificationDialog(context, msg);
+          double versionDouble = double.parse(version);
+          if (versionDouble > double.parse(PackageInfoManager.packageVersion)) {
+            DialogUtils.hideProgressDialog();
+            DialogUtils.showUpdateDialog(context, version, msg, true);
+            return;
+          } else {
+            DialogUtils.hideProgressDialog();
+            DialogUtils.showNotificationDialog(context, msg);
+          }
         }
       } catch (exception) {
         print('版本更新数据解析异常: $exception');
@@ -160,10 +167,14 @@ class PromiseInstance {
         var version = versionArray[0];
         var msg = versionArray[1];
         var force = versionArray[2];
-        if (version != PackageInfoManager.packageVersion) {
-          DialogUtils.hideProgressDialog();
-          DialogUtils.showUpdateDialog(context, version, msg, true);
-          return false;
+
+        var currentVersion = PackageInfoManager.packageVersion;
+        if (!currentVersion.contains('test')) {
+          if (double.parse(version) > double.parse(currentVersion)) {
+            DialogUtils.hideProgressDialog();
+            DialogUtils.showUpdateDialog(context, version, msg, true);
+            return false;
+          }
         }
       } catch (exception) {
         print('版本更新数据解析异常: $exception');

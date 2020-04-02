@@ -2,18 +2,23 @@ package com.example.gwgo_helper
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import android.graphics.PixelFormat
-import android.os.Build
 import android.content.Context.WINDOW_SERVICE
+import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.PixelFormat
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat.startActivityForResult
 import com.example.gwgo_helper.widget.RockerView
+
 
 /**
  * 悬浮窗辅助类
@@ -29,6 +34,7 @@ class FloatWindowHelper {
     var rockerView: RockerView? = null
     var ivMove: ImageView? = null
     var ivBack: ImageView? = null
+    var ivStart: ImageView? = null
     var onAngleChangeListener: RockerView.OnAngleChangeListener? = null
     var isMove = false
     var x = 0
@@ -44,7 +50,11 @@ class FloatWindowHelper {
      * 申请悬浮窗动态权限
      */
     fun requestPermission(activity: Activity): Boolean {
-        if (!Settings.canDrawOverlays(activity)) {
+        if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    !Settings.canDrawOverlays(activity)
+                } else {
+                    return true
+                }) {
             activity.startActivityForResult(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + activity.packageName)), REQUEST_CODE)
             return false
         } else {
@@ -80,7 +90,7 @@ class FloatWindowHelper {
             rockerView = floatView!!.findViewById(R.id.rocker_view)
             ivMove = floatView!!.findViewById(R.id.ivMove)
             ivBack = floatView!!.findViewById(R.id.ivBack)
-
+            ivStart = floatView!!.findViewById(R.id.ivCollection)
             rockerView!!.setCallBackMode(RockerView.CallBackMode.CALL_BACK_MODE_MOVE)
 
             floatView!!.setOnTouchListener { _, event ->
@@ -118,6 +128,35 @@ class FloatWindowHelper {
                     Toast.makeText(context, "未安装指示器", Toast.LENGTH_LONG).show()
                 } else {
                     context.startActivity(intent)
+                }
+            }
+
+            ivStart!!.setOnClickListener {
+                val inputView = LayoutInflater.from(context).inflate(R.layout.start_dialog_layout, null)
+                val name = inputView.findViewById<EditText>(R.id.name)
+                val location = inputView.findViewById<EditText>(R.id.location)
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val dialog = AlertDialog.Builder(context).setTitle("收藏位置")
+                            .setIcon(R.drawable.ic_star_black_24dp)
+                            .setPositiveButton("取消") { dialog, _ ->
+                                dialog.dismiss()
+                            }.setNegativeButton("确定") { dialog, _ ->
+                                val nameText = name.text
+                                val locationText = location.text
+
+
+
+                                dialog.dismiss()
+                            }
+                            .setView(inputView).create()
+
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                        dialog.window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION_PANEL)
+                    } else {
+                        dialog.window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY)
+                    }
+                    dialog.show()
                 }
             }
         }

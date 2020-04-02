@@ -96,14 +96,18 @@ class PlainSettingState extends State<PlainSettingPage> {
                       double lat = location['latitude'];
                       double lon = location['longitude'];
 
+                    // 转换成wgs座标
+                      var locationArray = gcj02towgs84(lon, lat);
+                      lat = locationArray[1];
+                      lon = locationArray[0];
+
                       print('我草，取到参数了，下面只剩解析了: lat = $lat, lon = $lon');
                       _controller.text =
                           '${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}';
                       if (!isFly) {
                         toast('选择完成，请点击起飞按钮');
                       } else {
-                        var data = _controller.text.split(',');
-                        teleport(double.parse(data[0]), double.parse(data[1]));
+                        fly(lat, lon, false);
                       }
                     });
                     // launch('https://lbs.qq.com/tool/getpoint/index.html');

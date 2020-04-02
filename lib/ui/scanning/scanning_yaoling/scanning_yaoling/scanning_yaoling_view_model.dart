@@ -69,11 +69,11 @@ class ScanningYaolingViewModel extends ViewStateModel {
       return;
     }
     // 扫描之前，先请求token
-    showProgressDialog(context, msg: '请求配置中...', barrierDismissible: false);
+    showProgressDialog(context, msg: '剑气获取...', barrierDismissible: false);
     try {
       TokenModel tokenModel = await TokenManager.getTokenForYaoling();
       if (tokenModel.code == '-1') {
-        Toast.show('暂时没有可用的配置，请10秒后重试', context, duration: 2);
+        Toast.show('暂时无可用剑气，请10秒后重试', context, duration: 2);
         dismissProgressDialog(context);
         startDelay();
         return;
@@ -99,6 +99,9 @@ class ScanningYaolingViewModel extends ViewStateModel {
         TokenManager.releaseToken(token);
         token = "";
         openid = "";
+      } else if (process.contains('异常')){
+        scanning = false;
+        startDelay();
       }
       if (data == null) {
       } else if (data.isNotEmpty) {

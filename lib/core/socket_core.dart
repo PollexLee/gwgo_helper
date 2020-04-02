@@ -50,8 +50,12 @@ class WebSocketCore {
     result.setAll(0, head);
     result.setAll(4, request.content.codeUnits);
     request.realContent = result;
-    socket.send(request, () {
-      next();
+    socket.send(request, (bool valid) {
+      if (valid) {
+        next();
+      } else {
+        requestStack.clear();
+      }
     });
   }
 
@@ -117,6 +121,7 @@ class GwgoSocketWrap {
   Function _connected;
   WebSocket _socket;
   Timer _timer;
+  bool valid = true;
 
   int count;
 
@@ -260,6 +265,9 @@ class GwgoSocketWrap {
           if (_request != null) {
             status = waitting;
           }
+        } else if (data.toString().contains('"reason":7')) {
+          print('服务端终止');
+          return;
         } else {
           print('未知的字符串$data');
         }
@@ -278,12 +286,14 @@ class GwgoSocketWrap {
           print(exception);
         }
 
-        if (result.contains('retcode":10004')) {
+        if (result.contains('retcode":10004') ||
+            result.contains('retcode":10003')) {
           // token失效，删除此token
           print('token失效了，删除$token');
           toast('配置失效，请重新获取');
           TokenManager.deleteToken(token);
-          close();
+          valid = false;
+          await _request.callback.onReceiveData(null);
           return;
         }
 
@@ -343,7 +353,7 @@ class GwgoSocketWrap {
     status = ready;
     if (null != _gwgoCallback) {
       Timer(Duration(milliseconds: 300), () {
-        _gwgoCallback();
+        _gwgoCallback(valid);
       });
     }
     // 当前request已处理完成

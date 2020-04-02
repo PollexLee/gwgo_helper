@@ -3,10 +3,10 @@
     package="com.example.gwgo_helper">
 
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    <uses-permission android:name="android.permission." />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -41,7 +41,7 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="43b1a8deaeed048609c4250a468f6de4" />
+            android:value="bd2e8323f1ef98818b0ff279ba5ac703" />
 
         <activity
             android:name=".MainActivity"
@@ -70,11 +70,13 @@
             android:name=".map.SelectLocationMapActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LaunchTheme" />
-        <activity android:name=".map.SelectAreaMapActivity"
+        <activity
+            android:name=".map.SelectAreaMapActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/LaunchTheme"/>
-        <activity android:name=".map.SelectScanningPointMapActivity"
-            android:theme="@style/LaunchTheme"/>
+            android:theme="@style/LaunchTheme" />
+        <activity
+            android:name=".map.SelectScanningPointMapActivity"
+            android:theme="@style/LaunchTheme" />
 
         <service
             android:name=".MockService"

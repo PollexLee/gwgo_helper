@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
 import 'package:gwgo_helper/manager/location_manager.dart';
 import 'package:gwgo_helper/model/leitai.dart';
@@ -35,7 +36,7 @@ Future teleport(double lat, double lon) async {
   List<double> wgsLocation = gcj02towgs84(lon, lat);
 
   if (isOpenFly) {
-    _flyFromTo(wgsLocation[1], wgsLocation[0]);
+    flyFromTo(wgsLocation[1], wgsLocation[0]);
   } else {
     // 复制到粘贴板
     Clipboard.setData(
@@ -47,7 +48,7 @@ Future teleport(double lat, double lon) async {
 /**
  * 从现在位置飞到xx，递归
  */
-_flyFromTo(double toLat, double toLon) async {
+flyFromTo(double toLat, double toLon) async {
   // 获取当前位置
   try {
     var location = await LocationManager.getLocation();
@@ -61,12 +62,12 @@ _flyFromTo(double toLat, double toLon) async {
     print('间隔距离是：$distance');
     if (!isOpenMultiFly) {
       // 没有开启多次飞行
-      await _fly(toLat, toLon, isStartAir);
+      await fly(toLat, toLon, isStartAir);
       print('飞行结束');
     } else {
       if (distance < 0.04) {
         // 一次飞行
-        await _fly(toLat, toLon, isStartAir);
+        await fly(toLat, toLon, isStartAir);
         print('飞行结束');
         toast('到达目地低');
       } else {
@@ -77,12 +78,12 @@ _flyFromTo(double toLat, double toLon) async {
         /// 移动距离 / 最大距离Î
         var moveLat = latDiff / biggest * 0.01;
         var moveLon = lonDiff / biggest * 0.01;
-        _fly(
+        fly(
             double.parse((location.latitude + moveLat).toStringAsFixed(6)),
             double.parse((location.longitude + moveLon).toStringAsFixed(6)),
             isStartAir);
         Timer(Duration(seconds: 2), () {
-          _flyFromTo(toLat, toLon);
+          flyFromTo(toLat, toLon);
         });
       }
     }
@@ -92,7 +93,7 @@ _flyFromTo(double toLat, double toLon) async {
   }
 }
 
-_fly(double flyLat, double flyLon, bool startGame) async {
+fly(double flyLat, double flyLon, bool startGame) async {
   if (Platform.isAndroid) {
     Map<String, dynamic> map = {
       "lat": flyLat,
@@ -165,7 +166,7 @@ Future<Map<String, dynamic>> getDeviceImei() => jumpPlugin
 Future<String> toast(String content) =>
     jumpPlugin.invokeMethod('toast', content);
 
-/// 启动飞行器
+/// 启动飞行器 wgs座标
 dynamic openAir(double flyLat, double flyLon, bool start) async {
   Map<String, dynamic> map = {"lat": flyLat, 'lon': flyLon, 'start': start};
   return await jumpPlugin.invokeMethod('openAir', map);
@@ -208,3 +209,13 @@ dynamic openQQ(String qq) async {
 dynamic openQQGroup() async {
   await jumpPlugin.invokeMethod('openQQGroup');
 }
+
+// dynamic getDeviceId() async {
+//   DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
+//   if (Platform.isIOS) {
+//     IosDeviceInfo iOSInfo = await _deviceInfo.iosInfo;
+//     print('iOS的设备id是： ${iOSInfo.identifierForVendor}');
+//   } else if (Platform.isAndroid) {
+//     print('Android的设备id是： 1111');
+//   }
+// }

@@ -5,6 +5,7 @@ import 'package:gwgo_helper/config.dart';
 import 'package:gwgo_helper/page/home/left_drawer_widget.dart';
 import 'package:gwgo_helper/page/leitai_page.dart';
 import 'package:gwgo_helper/ui/promise/promise.dart';
+import 'package:gwgo_helper/utils/common_utils.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -46,6 +47,8 @@ class HomePageState extends State<HomePage> {
 
     /// 第一次启动，自动跳转到使用说明
     Config.init(context);
+
+    // getDeviceId();
 
     return Scaffold(
       drawer: DrawerLayout(),
